@@ -1,0 +1,92 @@
+{
+  "profile": {
+    "id": 1,
+    "telegramId": null,
+    "course": 2,
+    "group": "ИС 22/9-1",
+    "firstName": "Иван",
+    "lastName": "Иванов",
+    "phone": "+79322556890"
+  },
+  "users": [
+    {
+      "id": 1,
+      "telegramId": null,
+      "course": 2,
+      "group": "ИС 22/9-1",
+      "firstName": "Иван",
+      "lastName": "Иванов",
+      "phone": "+79322556890"
+    },
+    {
+      "id": 2,
+      "telegramId": null,
+      "course": 1,
+      "group": "ИС 23/9-3",
+      "firstName": "Егор",
+      "lastName": "Максимов",
+      "phone": "+79224565566"
+    }
+  ],
+  "subjects": [
+    {
+      "id": 1,
+      "name": "Обеспечение качества функционирования компьютерных систем",
+      "duration": 48,
+      "course": 1,
+      "semestr": 1,
+      "teacher": "Мухаметшафиков Р.Р."
+    },
+    {
+      "id": 2,
+      "name": "Компьютерные сети",
+      "duration": 36,
+      "course": 1,
+      "semestr": 1,
+      "teacher": "Мухаметшафиков Р.Р."
+    }
+  ],
+  "marks": [
+    {
+      "id": 1, 
+      "value": 4,
+      "semestr": 1,
+      "date": "19.09.2023",
+      "lessonNumber": 1,
+      "subjectId": 1
+    },
+    {
+      "id": 2, 
+      "value": 3,
+      "semestr": 1,
+      "date": "19.09.2023",
+      "lessonNumber": 1,
+      "subjectId": 1
+    },
+    {
+      "id": 3, 
+      "value": 4,
+      "semestr": 1,
+      "date": "19.09.2023",
+      "lessonNumber": 2,
+      "subjectId": 2
+    },
+    {
+      "id": 4, 
+      "value": 4,
+      "semestr": 1,
+      "date": "19.09.2023",
+      "lessonNumber": 3,
+      "subjectId": 2
+    },
+    {
+      "id": 5, 
+      "value": 5,
+      "semestr": 1,
+      "date": "19.09.2023",
+      "lessonNumber": 2,
+      "subjectId": 2
+    }
+  ]
+
+}

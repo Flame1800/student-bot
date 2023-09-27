@@ -2,3 +2,5 @@
 .env
 /node_modules
 sessions.json
+# Sentry Auth Token
+.sentryclirc
