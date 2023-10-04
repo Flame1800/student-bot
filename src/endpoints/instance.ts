@@ -6,7 +6,7 @@ const configService = new ConfigService()
 const server: AxiosInstance = axios.create({
     baseURL:  `${configService.get(`DATA_API_URL`)}/college/hs`,
     timeout: 8000,
-    headers: {
+    headers: { 
         "Content-Type": "application/json"
     }
 })

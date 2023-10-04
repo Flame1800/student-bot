@@ -13,7 +13,7 @@ export class LoginCommand extends Command {
         this.bot.action('login', (ctx) => {
 
             if (ctx.session.user_id) {
-                ctx.reply("Вы успешно авторизованны!, Давайте перейдем в меню", Markup.inlineKeyboard([
+                ctx.reply("Вы успешно авторизованны! Давайте перейдем в меню", Markup.inlineKeyboard([
                     navigationPattern.navigationMenu.button
                 ]))
                 return
@@ -39,13 +39,13 @@ export class LoginCommand extends Command {
                     ]));
 
                 } else {
-                    ctx.reply(`Кажется вас нет в списках студентов или сотрудников института. Если это какая-то ошибка, обратитесь в поддержку. \nМожете вернуться в меню`)
+                    ctx.reply(`Кажется ваш телефон не зарегистрирован в системе. Обратитесь к куратору. \nМожете вернуться в меню`)
                 }
             } catch (error) {
                 throw new Error(`Не удалось авторизоваться. ${error}`)
-            }
+            } 
 
             return null;
         })
     }
-}
+} 

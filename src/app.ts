@@ -5,7 +5,6 @@ import { IBotContext } from "./context/context.interface";
 import { Command } from "./commands/command.class";
 import { StartCommand } from "./commands/start.commandt";
 import LocalSession from "telegraf-session-local";
-import { ProfileCommand } from "./commands/profile.command";
 import { StatisticCommand } from "./commands/statistic.command";
 import { User } from "./types/user.type";
 import { MenuCommand } from "./commands/menu.command";
@@ -34,6 +33,10 @@ class Bot {
         for (const command of this.commands) {
             command.handle();
         }
+
+        // this.bot.on('text', (ctx) => {
+        //     console.count('text')
+        // })
 
         this.bot.launch()
     }
