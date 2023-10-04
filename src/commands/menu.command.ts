@@ -1,6 +1,8 @@
 import { IBotContext } from "../context/context.interface";
+import navigationPattern from "../utils/navigationPattern";
 import { Command } from "./command.class";
-import {Telegraf, Markup } from "telegraf";
+import {Telegraf } from "telegraf";
+import { navigationMenu } from "./start.commandt";
 
 export class MenuCommand extends Command {
     constructor(bot: Telegraf<IBotContext>) {
@@ -8,14 +10,8 @@ export class MenuCommand extends Command {
     }
 
     handle(): void {
-        this.bot.command("menu", (ctx) => {
-            console.log(ctx.session);
-            
-            ctx.reply("Меню: ", Markup.keyboard([
-                Markup.button.text("Профиль"),
-                Markup.button.text("Статистика"),
-                Markup.button.text("Расписание"),
-            ]).resize());
+        this.bot.action(navigationPattern.navigationMenu.value, (ctx) => {
+            ctx.reply("Чем я могу вам помочь? ", navigationMenu);
         })
     }
 }
