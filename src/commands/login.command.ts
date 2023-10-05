@@ -31,9 +31,10 @@ export class LoginCommand extends Command {
 
         this.bot.on('contact', async (ctx) => {
             const phoneNumber = configService.get('MOCK_PHONE') === 'true' ? '89227683894' : ctx.message.contact.phone_number
+            const currPhoneNum = phoneNumber.replace("+7", "8")
 
             try {
-                const responce = await getUser(phoneNumber)
+                const responce = await getUser(currPhoneNum)
 
                 if (responce.data.user_id) {
 
@@ -41,7 +42,7 @@ export class LoginCommand extends Command {
                     ctx.session.user = responce.data
 
                     await ctx.reply("Вы успешно авторизовались!", Markup.keyboard([
-                        [responce.data.name]
+                        [responce.data.name ? responce.data.name : '...']
                     ]).resize())
 
                     await ctx.reply("Чем я могу вам помочь?", navigationMenu);
