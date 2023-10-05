@@ -6,6 +6,7 @@ import { Command } from "./command.class";
 import {Telegraf, Markup } from "telegraf";
 
 export const navigationMenu = Markup.inlineKeyboard([
+    [navigationPattern.profile.button],
     [navigationPattern.currentStatistic.button],
     [navigationPattern.gradebook.button],
 ])

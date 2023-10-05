@@ -10,15 +10,16 @@ import periodsAdapter from "../utils/adapters/periods.adapter";
 import disciplineAdapter from "../utils/adapters/discipline.adapter";
 import { Mark } from "../types/mark.type";
 import navigationPattern from "../utils/navigationPattern";
+import { navigationMenu } from "./start.commandt";
 
 
 
 
 const markColors: { [key: string]: string } = {
     "#1BB018": "🟢",
-    "#0000ff": "🔵",
-    "#000000": "⚫️",
+    "#F39302": "🟡",
     "#ff0000": "🔴",
+    "#000000": "⚫️"
 }
 
 // const maxMessageLength = 4096;
@@ -116,10 +117,7 @@ export class StatisticCommand extends Command {
                     await ctx.replyWithHTML(messageOfMarks)
                 }
                 
-                await ctx.reply('Вы можете посмотреть другие специальности или вернуться в меню', Markup.inlineKeyboard([
-                    navigationPattern.currentStatistic.button,
-                    navigationPattern.navigationMenu.button
-                ]))
+                await ctx.reply('Вы можете посмотреть другие дисциплины или вернуться в меню', navigationMenu)
             }
         });
     }

@@ -3,13 +3,14 @@ import { IConfigService } from "./config/config.interface";
 import { ConfigService } from "./config/config.service";
 import { IBotContext } from "./context/context.interface";
 import { Command } from "./commands/command.class";
-import { StartCommand } from "./commands/start.commandt";
+import { StartCommand, navigationMenu } from "./commands/start.commandt";
 import LocalSession from "telegraf-session-local";
 import { StatisticCommand } from "./commands/statistic.command";
 import { User } from "./types/user.type";
 import { MenuCommand } from "./commands/menu.command";
 import { LoginCommand } from "./commands/login.command";
 import { GradebookCommand } from "./commands/gradebook.command";
+import { ProfileCommand } from "./commands/profile.command";
 
 class Bot {
     bot: Telegraf<IBotContext>;
@@ -23,6 +24,7 @@ class Bot {
 
     init() {
         this.commands = [
+            new ProfileCommand(this.bot),
             new StartCommand(this.bot),
             new LoginCommand(this.bot),
             new MenuCommand(this.bot),
@@ -34,9 +36,9 @@ class Bot {
             command.handle();
         }
 
-        // this.bot.on('text', (ctx) => {
-        //     console.count('text')
-        // })
+        this.bot.on('text', (ctx) => {
+            ctx.reply("Я вас не понял, не знаю таких команд. Чем я могу вам помочь?", navigationMenu)
+        })
 
         this.bot.launch()
     }

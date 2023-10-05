@@ -3,10 +3,14 @@ import getUser from "../endpoints/getUser";
 import navigationPattern from "../utils/navigationPattern";
 import { Command } from "./command.class";
 import {Telegraf, Markup } from "telegraf";
+import { navigationMenu } from "./start.commandt";
+import { ConfigService } from "../config/config.service";
+
+const configService = new ConfigService()
 
 export class LoginCommand extends Command {
     constructor(bot: Telegraf<IBotContext>) {
-        super(bot);
+        super(bot); 
     }
 
     handle(): void {
@@ -26,20 +30,26 @@ export class LoginCommand extends Command {
         })
 
         this.bot.on('contact', async (ctx) => {
-            // const phoneNumber = ctx.message.contact.phone_number
-            const phoneNumber = '89227683894'
+            const phoneNumber = configService.get('MOCK_PHONE') === 'true' ? '89227683894' : ctx.message.contact.phone_number
 
             try {
                 const responce = await getUser(phoneNumber)
-                if (responce.data.user_id) {
-                    ctx.session.user_id = responce.data.user_id
 
-                    ctx.reply("Вы успешно авторизовались! Давайте перейдем в меню", Markup.inlineKeyboard([
-                        navigationPattern.navigationMenu.button
-                    ]));
+                if (responce.data.user_id) {
+
+                    ctx.session.user_id = responce.data.user_id
+                    ctx.session.user = responce.data
+
+                    await ctx.reply("Вы успешно авторизовались!", Markup.keyboard([
+                        [responce.data.name]
+                    ]).resize())
+
+                    await ctx.reply("Чем я могу вам помочь?", navigationMenu);
 
                 } else {
-                    ctx.reply(`Кажется ваш телефон не зарегистрирован в системе. Обратитесь к куратору. \nМожете вернуться в меню`)
+                    ctx.reply(`Кажется ваш телефон не зарегистрирован в системе. Обратитесь к куратору.`, Markup.inlineKeyboard([
+                        Markup.button.callback('Авторизоваться', 'login')
+                    ]))
                 }
             } catch (error) {
                 throw new Error(`Не удалось авторизоваться. ${error}`)

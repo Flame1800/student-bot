@@ -8,6 +8,7 @@ import navigationPattern from "../utils/navigationPattern";
 import sendNoAuthWarning from "../utils/sendNoAuthWarning";
 import { Command } from "./command.class";
 import { Telegraf, Markup } from "telegraf";
+import { navigationMenu } from "./start.commandt";
 
 export class GradebookCommand extends Command {
     periods: Period[] = []
@@ -94,10 +95,7 @@ export class GradebookCommand extends Command {
                         await ctx.replyWithHTML(messageOfCredits)
                     }
 
-                    await ctx.reply('Вы можете посмотреть зачеты за другие периоды или вернуться в меню', Markup.inlineKeyboard([
-                        navigationPattern.gradebook.button,
-                        navigationPattern.navigationMenu.button
-                    ]))
+                    await ctx.reply('Вы можете посмотреть зачеты за другие периоды или вернуться в меню', navigationMenu)
                 }
             } catch (error) {
                 throw new Error(`Не удалось получить данные. ${error}`)
