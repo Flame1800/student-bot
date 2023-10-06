@@ -48,7 +48,7 @@ export class LoginCommand extends Command {
 
                 } else {
                     ctx.reply(`Кажется ваш телефон не зарегистрирован в системе. Обратитесь к куратору.`, Markup.inlineKeyboard([
-                        Markup.button.callback('Авторизоваться', 'login')
+                        navigationPattern.navigationMenu.button
                     ]))
                 }
             } catch (error) {

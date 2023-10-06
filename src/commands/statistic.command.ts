@@ -39,23 +39,23 @@ export class StatisticCommand extends Command {
             }
 
             if (this.disciplines.length === 0) {
-                
+
 
                 try {
                     const periodsResponce = await getPeriods(ctx.session.user_id)
                     if (periodsResponce.data) {
                         const periods = periodsAdapter(periodsResponce.data.data)
                         const currPeriod: Period | undefined = periods.find((period: Period) => period.isCurrent)
-    
+
                         if (currPeriod) {
                             const disciplinesResponce = await getDisciplines(currPeriod.id, ctx.session.user_id)
                             const disciplines = disciplineAdapter(disciplinesResponce.data.data)
-    
+
                             this.disciplines = disciplines ?? []
                         }
                     }
-    
-                } catch (error) { 
+
+                } catch (error) {
                     throw new Error(`Не удалось получить данные. ${error}`)
                 }
             }
@@ -80,43 +80,46 @@ export class StatisticCommand extends Command {
             const disciplineId: string = ctx.match.input.split(':')[1];
             const discipline: Discipline | undefined = this.disciplines.find((discipline) => discipline.id === disciplineId);
 
-            if (discipline) { 
+            if (discipline) {
                 const subjectName = `<b>${discipline.name}</b>`
                 const avgMarkTitle = `✔️ <i>Средний балл: </i> <b>${discipline.avgMark}</b>`
+                const info = `Обозначения: \n\n⏰ - Опоздание \n🚷 - Неявка \n   x - Нет оценки`
 
-                // TODO: Message is too long: Математика
-                let message = `${subjectName}\n\n${avgMarkTitle}\n\n Оценки по предмету:`
+                let message = `${subjectName}\n\n${avgMarkTitle}\n\n${info}\n\n Оценки по предмету:`
                 await ctx.replyWithHTML(message)
 
                 let messageOfMarks = ''
-                let divCounter = 5
+                let divCounter = 20
                 let currentCount = 0
 
-                for (const mark of discipline.marks) {
-                    currentCount++;
+                if (discipline.marks.length === 0) {
+                    await ctx.reply("Нет оценок")
+                } else {
+                    for (const mark of discipline.marks) {
+                        currentCount++;
 
-                    const date = new Date(mark.date)
-                    const formattedDate = `🕑 <i>${date.getDate()} ${new Intl.DateTimeFormat('ru-RU', { month: 'long' }).format(date)} ${date.getFullYear()}</i>`
-                    const attendance = !mark.tornout ? "\n❌ Неявка" : '';
-                    const late = mark.isLate ? "\n❌ Опоздание" : '';
-                    const markValue = `${markColors[mark.colorMark] ?? ''} <b>${mark.value}</b>`;
-                    const divider = '\n➖➖➖➖➖➖➖➖➖'
+                        const date = new Date(mark.date)
+                        const formattedDate = `<i>${date.getDate()} ${new Intl.DateTimeFormat('ru-RU', { month: 'long' }).format(date)}</i>`
+                        const attendance = !mark.tornout ? " | 🚷" : '';
+                        const late = mark.isLate ? " | ⏰" : '';
+                        const markValue = `${markColors[mark.colorMark] ?? ''} <b>${mark.value.length ? mark.value : "x"}</b>`;
 
-                    messageOfMarks += `\n\n${formattedDate}\n${attendance}${late}\n\n${markValue}\n ${divider}`;
+                        messageOfMarks += `${markValue} | ${formattedDate}${attendance}${late} \n\n`;
 
 
-                    if (currentCount === divCounter) {
-                        currentCount = 0;
+                        if (currentCount === divCounter) {
+                            currentCount = 0;
 
+                            await ctx.replyWithHTML(messageOfMarks)
+                            messageOfMarks = ''
+                        }
+                    }
+
+                    if (messageOfMarks.length !== 0) {
                         await ctx.replyWithHTML(messageOfMarks)
-                        messageOfMarks = ''
                     }
                 }
 
-                if (messageOfMarks.length !== 0) {
-                    await ctx.replyWithHTML(messageOfMarks)
-                }
-                
                 await ctx.reply('Вы можете посмотреть другие дисциплины или вернуться в меню', navigationMenu)
             }
         });
