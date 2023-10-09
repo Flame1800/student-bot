@@ -8,7 +8,6 @@ import getDisciplines from "../endpoints/getDisciplines";
 import { Discipline } from "../types/discipline.type";
 import periodsAdapter from "../utils/adapters/periods.adapter";
 import disciplineAdapter from "../utils/adapters/discipline.adapter";
-import { Mark } from "../types/mark.type";
 import navigationPattern from "../utils/navigationPattern";
 import { navigationMenu } from "./start.commandt";
 
@@ -21,6 +20,20 @@ const markColors: { [key: string]: string } = {
     "#F39302": "🟠",
     "#ff0000": "🔴",
     "#000000": "⚫️"
+}
+
+const generateMarkSign = (markValue: string) => {
+    switch (markValue) {
+        case "О":
+            return "⏰"
+        case "H":
+            return "🚷"
+        case "О, Н":
+        case "Н, О":
+            return "🚷"
+        default:
+            return ""
+    }
 }
 
 // const maxMessageLength = 4096;
@@ -65,7 +78,7 @@ export class StatisticCommand extends Command {
 
             const subjectCards = this.disciplines.map((subject) => {
                 const button = Markup.button.callback(
-                    `${subject.name}`,
+                    `${subject.avgMark} — ${subject.name}`,
                     `subject:${subject.id}`
                 )
 
@@ -107,9 +120,13 @@ export class StatisticCommand extends Command {
                         const formattedDate = `<i>${date.getDate()} ${new Intl.DateTimeFormat('ru-RU', { month: 'short' }).format(date)}</i>`
                         const attendance = !mark.tornout ? " | 🚷" : '';
                         const late = mark.isLate ? " | ⏰" : '';
-                        const markValue = `${markColors[mark.colorMark] ?? ''} <b>${mark.value.length ? mark.value : "x"}</b>`;
+                        const specSign = generateMarkSign(mark.value)
+                        const isEmptyMark = specSign.length !== 0
+                        let markColor = !isEmptyMark ? markColors[mark.colorMark] : specSign
 
-                        messageOfMarks += `${markValue} | ${formattedDate}${attendance}${late} \n\n`;
+                        const markValue = `${markColor} <b>${mark.value.length ? mark.value : "x"}</b>`;
+
+                        messageOfMarks += `${markValue} | ${formattedDate}${!isEmptyMark ? attendance : ''}${!isEmptyMark ? late : ''} \n\n`;
 
 
                         if (currentCount === divCounter) {
