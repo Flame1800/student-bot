@@ -17,7 +17,8 @@ import { navigationMenu } from "./start.commandt";
 
 const markColors: { [key: string]: string } = {
     "#1BB018": "🟢",
-    "#F39302": "🟡",
+    "#ffff00": "🟡",
+    "#F39302": "🟠",
     "#ff0000": "🔴",
     "#000000": "⚫️"
 }
@@ -83,9 +84,9 @@ export class StatisticCommand extends Command {
             if (discipline) {
                 const subjectName = `<b>${discipline.name}</b>`
                 const avgMarkTitle = `✔️ <i>Средний балл: </i> <b>${discipline.avgMark}</b>`
-                const info = `Обозначения: \n\n⏰ - Опоздание \n🚷 - Неявка \n   x - Нет оценки`
+                const info = `Обозначения: \n\n⏰ - Опоздание \n🚷 - Неявка`
 
-                let message = `${subjectName}\n\n${avgMarkTitle}\n\n${info}\n\n Оценки по предмету:`
+                let message = `${subjectName}\n\n${avgMarkTitle}\n\n${info}\n\nОценки по предмету:`
                 await ctx.replyWithHTML(message)
 
                 let messageOfMarks = ''
@@ -96,10 +97,14 @@ export class StatisticCommand extends Command {
                     await ctx.reply("Нет оценок")
                 } else {
                     for (const mark of discipline.marks) {
+                        if (mark.value.length === 0) {
+                            continue;
+                        }
+
                         currentCount++;
 
                         const date = new Date(mark.date)
-                        const formattedDate = `<i>${date.getDate()} ${new Intl.DateTimeFormat('ru-RU', { month: 'long' }).format(date)}</i>`
+                        const formattedDate = `<i>${date.getDate()} ${new Intl.DateTimeFormat('ru-RU', { month: 'short' }).format(date)}</i>`
                         const attendance = !mark.tornout ? " | 🚷" : '';
                         const late = mark.isLate ? " | ⏰" : '';
                         const markValue = `${markColors[mark.colorMark] ?? ''} <b>${mark.value.length ? mark.value : "x"}</b>`;

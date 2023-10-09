@@ -73,16 +73,16 @@ export class GradebookCommand extends Command {
                         currentCount++;
 
                         const date = new Date(credit.date)
-                        const formattedDate = `🕑 ${date.getDate()} ${new Intl.DateTimeFormat('ru-RU', { month: 'long' }).format(date)} ${date.getFullYear()}`
+                        const formattedDate = `${date.getDate()} ${new Intl.DateTimeFormat('ru-RU', { month: 'short' }).format(date)} ${date.getFullYear()}`
                         const nameDiscipline = `<b>${credit.disciplineName}</b>`
                         const typeOfControll = `<i>${credit.typeOfControll}</i>`
                         const approveValue = `<i>${credit.isApprove ? "✅ Зачёт" : "❌ Не зачёт"}</i>`;
                         const mark = `Оценка: <b>${credit.mark}</b>`;
-                        const teacher = `Преподаватель: ${credit.teacher}`;
+                        const teacher = `<i>Преподаватель:</i> ${credit.teacher}`;
                         const divider = '\n➖➖➖➖➖➖➖➖➖' 
 
 
-                        messageOfCredits += `${nameDiscipline}\n\n${formattedDate}\n\n${typeOfControll}\n\n${teacher}\n\n${mark}\n\n${approveValue}\n${divider}\n`;
+                        messageOfCredits += `${nameDiscipline} \n${formattedDate}\n\n${typeOfControll}\n\n${teacher}\n\n${mark} — ${approveValue}\n${divider}\n`;
 
                         if (currentCount === divCounter) {
                             currentCount = 0;

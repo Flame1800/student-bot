@@ -26,10 +26,11 @@ export class LoginCommand extends Command {
             const message = `Я не могу предоставить доступ к данным пока не узнаю кто их просит. \nПожалуйста поделитесь своим контактом что бы я мог определить вас по вашему номеру телефона`
             ctx.reply(message, Markup.keyboard([
                 Markup.button.contactRequest('Поделиться контактом')
-            ]).resize())
+            ]).resize().oneTime())
         })
 
         this.bot.on('contact', async (ctx) => {
+
             const phoneNumber = configService.get('MOCK_PHONE') === 'true' ? '89227683894' : ctx.message.contact.phone_number
             const currPhoneNum = phoneNumber.replace("+7", "8")
 
@@ -41,9 +42,7 @@ export class LoginCommand extends Command {
                     ctx.session.user_id = responce.data.user_id
                     ctx.session.user = responce.data
 
-                    await ctx.reply("Вы успешно авторизовались!", Markup.keyboard([
-                        [responce.data.name ? responce.data.name : '...']
-                    ]).resize())
+                    await ctx.reply("Вы успешно авторизовались!", Markup.removeKeyboard())
 
                     await ctx.reply("Чем я могу вам помочь?", navigationMenu);
 
