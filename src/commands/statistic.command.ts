@@ -12,8 +12,6 @@ import navigationPattern from "../utils/navigationPattern";
 import { navigationMenu } from "./start.commandt";
 
 
-
-
 const markColors: { [key: string]: string } = {
     "#1BB018": "🟢",
     "#ffff00": "🟡",
@@ -23,14 +21,14 @@ const markColors: { [key: string]: string } = {
 }
 
 const generateMarkSign = (markValue: string) => {
-    switch (markValue) {
+    switch (markValue.trim()) {
         case "О":
             return "⏰"
-        case "H":
+        case "Н":
             return "🚷"
         case "О, Н":
         case "Н, О":
-            return "🚷"
+            return "⏰ 🚷"
         default:
             return ""
     }
@@ -53,8 +51,6 @@ export class StatisticCommand extends Command {
             }
 
             if (this.disciplines.length === 0) {
-
-
                 try {
                     const periodsResponce = await getPeriods(ctx.session.user_id)
                     if (periodsResponce.data) {
@@ -74,13 +70,14 @@ export class StatisticCommand extends Command {
                 }
             }
 
-            const title = "<b>Ваши текущие предметы.</b>\nВыберите предмет что бы увидеть вашу успеваемость по нему: "
+            const info = "Предметы показаны в формате: \n  <b>Средний балл — Предмет</b> \n  <b>н/о</b> - оценки ещё не выставлялись"
+            const title = `<b>Ваши текущие предметы.</b>\n\n${info}\n\nВыберите предмет, чтобы увидеть вашу успеваемость по нему:`
 
-            const subjectCards = this.disciplines.map((subject) => {
-                const button = Markup.button.callback(
-                    `${subject.avgMark} — ${subject.name}`,
+            const subjectCards = this.disciplines.map((subject) => { 
+                const button = Markup.button.callback( 
+                    `${subject.avgMark === 0 ? "н/о" : subject.avgMark} — ${subject.name}`,
                     `subject:${subject.id}`
-                )
+                ) 
 
                 return [button]
             })
@@ -124,7 +121,7 @@ export class StatisticCommand extends Command {
                         const isEmptyMark = specSign.length !== 0
                         let markColor = !isEmptyMark ? markColors[mark.colorMark] : specSign
 
-                        const markValue = `${markColor} <b>${mark.value.length ? mark.value : "x"}</b>`;
+                        const markValue = `${markColor} <b>${mark.value}</b>`;
 
                         messageOfMarks += `${markValue} | ${formattedDate}${!isEmptyMark ? attendance : ''}${!isEmptyMark ? late : ''} \n\n`;
 
