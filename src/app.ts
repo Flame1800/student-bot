@@ -11,6 +11,8 @@ import { MenuCommand } from "./commands/menu.command";
 import { LoginCommand } from "./commands/login.command";
 import { GradebookCommand } from "./commands/gradebook.command";
 import { ProfileCommand } from "./commands/profile.command";
+import { FeedbackCommand } from "./commands/feedback.command";
+import { ScheduleCommand } from "./commands/schedule.command";
 
 class Bot {
     bot: Telegraf<IBotContext>;
@@ -29,16 +31,18 @@ class Bot {
             new LoginCommand(this.bot),
             new MenuCommand(this.bot),
             new StatisticCommand(this.bot),
-            new GradebookCommand(this.bot)
+            new GradebookCommand(this.bot),
+            new FeedbackCommand(this.bot),
+            new ScheduleCommand(this.bot)
         ]
 
         for (const command of this.commands) {
             command.handle();
         }
 
-        this.bot.on('text', (ctx) => {
-            ctx.reply("Я вас не понял, не знаю таких команд. Чем я могу вам помочь?", navigationMenu)
-        })
+        // this.bot.on('text', (ctx) => {
+        //     ctx.reply("Я вас не понял, не знаю таких команд. Чем я могу вам помочь?", navigationMenu)
+        // })
 
         this.bot.launch()
     }

@@ -1,7 +1,7 @@
 import axios, {AxiosInstance} from "axios";
 import { ConfigService } from "../config/config.service";
 
-const configService = new ConfigService()
+export const configService = new ConfigService()
 
 const server: AxiosInstance = axios.create({
     baseURL:  `${configService.get(`DATA_API_URL`)}/college/hs`,

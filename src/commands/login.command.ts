@@ -29,14 +29,28 @@ export class LoginCommand extends Command {
             ]).resize().oneTime())
         })
 
+        this.bot.action('logout', (ctx) => {
+            if (!ctx.session.user_id) {
+                ctx.reply("Вы не авторизованы!")
+                return
+            }
+
+            ctx.session.user_id = ''
+            ctx.session.user = null
+
+            ctx.reply("Вы вышли из аккаунта", Markup.inlineKeyboard([
+                Markup.button.callback('Авторизоваться', 'login')
+            ]))
+        })
+
         this.bot.on('contact', async (ctx) => {
 
-            const phoneNumber = configService.get('MOCK_PHONE') === 'true' ? '89227683894' : ctx.message.contact.phone_number
+            const phoneNumber = configService.get('MOCK_PHONE') !== 'false' ? configService.get('MOCK_PHONE') : ctx.message.contact.phone_number
             const currPhoneNum = phoneNumber.replace("+7", "8")
 
             try {
                 const responce = await getUser(currPhoneNum)
-
+ 
                 if (responce.data.user_id) {
 
                     ctx.session.user_id = responce.data.user_id
@@ -48,7 +62,7 @@ export class LoginCommand extends Command {
 
                 } else {
                     ctx.reply(`Кажется ваш телефон не зарегистрирован в системе. Обратитесь к куратору.`, Markup.inlineKeyboard([
-                        navigationPattern.navigationMenu.button
+                        Markup.button.callback('Авторизоваться', 'login')
                     ]))
                 }
             } catch (error) {

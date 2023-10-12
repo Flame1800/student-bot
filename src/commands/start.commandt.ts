@@ -8,7 +8,10 @@ import {Telegraf, Markup } from "telegraf";
 export const navigationMenu = Markup.inlineKeyboard([
     [navigationPattern.profile.button],
     [navigationPattern.currentStatistic.button],
+    [navigationPattern.schedule.button],
     [navigationPattern.gradebook.button],
+    [navigationPattern.feedback.button],
+    [navigationPattern.logout.button],
 ])
 
 export class StartCommand extends Command {
@@ -20,8 +23,6 @@ export class StartCommand extends Command {
         const greeting = `
         Добро пожаловать в бот Sielom!
         `
-
-        
 
         this.bot.start((ctx) => {
             if (!ctx.session.user_id) {

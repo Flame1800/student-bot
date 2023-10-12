@@ -15,9 +15,13 @@ export class ProfileCommand extends Command {
                 return sendNoAuthWarning(ctx)
             }
             
-            const {name, group} = ctx.session.user
+            if (ctx.session.user) {
+                const {name, group} = ctx.session.user
 
-            ctx.replyWithHTML(`Ваш профиль: \n\n<b>${name}</b> \n<i>${group} группа</i>`);
+                ctx.replyWithHTML(`Ваш профиль: \n\n<b>${name}</b> \n<i>${group} группа</i>`);
+            } else {
+                return sendNoAuthWarning(ctx)
+            }
         }); 
     } 
 }

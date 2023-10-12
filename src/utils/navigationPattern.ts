@@ -5,6 +5,10 @@ const navigationPattern = {
         button: Markup.button.callback('Мой профиль', 'profile'),
         value: "profile"
     },
+    schedule: {
+        button: Markup.button.callback('Расписание', 'schedule'),
+        value: "schedule"
+    },
     currentStatistic: {
         button: Markup.button.callback('Текущая успеваемость', 'current_stat'),
         value: "current_stat"
@@ -16,6 +20,14 @@ const navigationPattern = {
     navigationMenu: {
         button: Markup.button.callback('Меню', 'menu'),
         value: "menu"
+    },
+    feedback: {
+        button: Markup.button.callback('Предложения', 'feedback'),
+        value: "feedback"
+    },
+    logout: {
+        button: Markup.button.callback('Выход', 'logout'),
+        value: "logout"
     }
 }
 
