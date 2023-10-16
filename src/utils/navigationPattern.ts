@@ -1,5 +1,6 @@
 import { Markup } from "telegraf"
 
+
 const navigationPattern = {
     profile: {
         button: Markup.button.callback('Мой профиль', 'profile'),

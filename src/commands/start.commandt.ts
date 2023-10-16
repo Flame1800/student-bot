@@ -1,5 +1,4 @@
 import { IBotContext } from "../context/context.interface";
-import { User } from "../types/user.type";
 import navigationPattern from "../utils/navigationPattern";
 import sendNoAuthWarning from "../utils/sendNoAuthWarning";
 import { Command } from "./command.class";

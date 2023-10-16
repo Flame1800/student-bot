@@ -3,7 +3,7 @@ import { IConfigService } from "./config/config.interface";
 import { ConfigService } from "./config/config.service";
 import { IBotContext } from "./context/context.interface";
 import { Command } from "./commands/command.class";
-import { StartCommand, navigationMenu } from "./commands/start.commandt";
+import { StartCommand } from "./commands/start.commandt";
 import LocalSession from "telegraf-session-local";
 import { StatisticCommand } from "./commands/statistic.command";
 import { User } from "./types/user.type";

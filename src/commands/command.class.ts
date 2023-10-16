@@ -1,4 +1,3 @@
-import { User } from "@sentry/nextjs";
 import { IBotContext } from "../context/context.interface";
 import { Telegraf } from "telegraf"
 

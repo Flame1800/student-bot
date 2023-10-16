@@ -4,7 +4,7 @@ import { Command } from "./command.class";
 import { Telegraf } from "telegraf";
 import { writeFile, readFile } from 'node:fs';
 import { navigationMenu } from "./start.commandt";
-import adminIds from "../../data/admin_ids.json"
+import adminIds from "../../data/admin_ids.json";
 
 
 export class FeedbackCommand extends Command {
