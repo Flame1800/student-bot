@@ -79,7 +79,16 @@ export class LoginCommand extends Command {
             let logText = ''
 
             const phoneNumber = configService.get('MOCK_PHONE') !== 'false' ? configService.get('MOCK_PHONE') : ctx.message.contact.phone_number
-            const currPhoneNum = phoneNumber.replace("+7", "8")
+
+
+            let currPhoneNum = ""
+
+            if (phoneNumber.startsWith("+7")) {
+                currPhoneNum = phoneNumber.replace("+7", "8")
+            }
+            if (phoneNumber.startsWith("7")) {
+                currPhoneNum = phoneNumber.replace("7", "8")
+            }
 
             console.log(currPhoneNum)
 
