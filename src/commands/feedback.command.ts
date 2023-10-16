@@ -24,7 +24,7 @@ export class FeedbackCommand extends Command {
                     }
 
                     const dataFile = JSON.parse(data)
-                    const newData = { data: [...dataFile.data, ctx.message.text.trim()] }
+                    const newData = { data: [...dataFile.data, `${ctx.session.user?.name} ${ctx.session.user?.group}:\n${ctx.message.text.trim()}`] }
 
                     writeFile('./data/suggestions.json', JSON.stringify(newData), 'utf-8', (err) => {
                         if (err) {
