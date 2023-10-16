@@ -42,6 +42,7 @@ export class StatisticCommand extends Command {
 
     constructor(bot: Telegraf<IBotContext>) {
         super(bot);
+        this.disciplines = []
     }
 
     handle(): void {
@@ -50,34 +51,34 @@ export class StatisticCommand extends Command {
                 return sendNoAuthWarning(ctx)
             }
 
-            if (this.disciplines.length === 0) {
-                try {
-                    const periodsResponce = await getPeriods(ctx.session.user_id)
-                    if (periodsResponce.data) {
-                        const periods = periodsAdapter(periodsResponce.data.data)
-                        const currPeriod: Period | undefined = periods.find((period: Period) => period.isCurrent)
+            console.log(`User id:`, ctx.session.user_id, ` disciplines: ${this.disciplines.length}`)
 
-                        if (currPeriod) {
-                            const disciplinesResponce = await getDisciplines(currPeriod.id, ctx.session.user_id)
-                            const disciplines = disciplineAdapter(disciplinesResponce.data.data)
+            try {
+                const periodsResponce = await getPeriods(ctx.session.user_id)
+                if (periodsResponce.data) {
+                    const periods = periodsAdapter(periodsResponce.data.data)
+                    const currPeriod: Period | undefined = periods.find((period: Period) => period.isCurrent)
 
-                            this.disciplines = disciplines ?? []
-                        }
+                    if (currPeriod) {
+                        const disciplinesResponce = await getDisciplines(currPeriod.id, ctx.session.user_id)
+                        const disciplines = disciplineAdapter(disciplinesResponce.data.data)
+
+                        this.disciplines = disciplines ?? []
                     }
-
-                } catch (error) {
-                    throw new Error(`Не удалось получить данные. ${error}`)
                 }
+
+            } catch (error) {
+                throw new Error(`Не удалось получить данные. ${error}`)
             }
 
             const info = "Предметы показаны в формате: \n  <b>Средний балл — Предмет</b> \n  <b>н/о</b> - оценки ещё не выставлялись"
             const title = `<b>Ваши текущие предметы.</b>\n\n${info}\n\nВыберите предмет, чтобы увидеть вашу успеваемость по нему:`
 
-            const subjectCards = this.disciplines.map((subject) => { 
-                const button = Markup.button.callback( 
+            const subjectCards = this.disciplines.map((subject) => {
+                const button = Markup.button.callback(
                     `${subject.avgMark === 0 ? "н/о" : subject.avgMark} — ${subject.name}`,
                     `subject:${subject.id}`
-                ) 
+                )
 
                 return [button]
             })
@@ -87,6 +88,7 @@ export class StatisticCommand extends Command {
 
 
         this.bot.action(/subject:(.*)$/, async (ctx) => {
+
 
             const disciplineId: string = ctx.match.input.split(':')[1];
             const discipline: Discipline | undefined = this.disciplines.find((discipline) => discipline.id === disciplineId);

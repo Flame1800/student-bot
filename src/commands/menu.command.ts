@@ -18,5 +18,13 @@ export class MenuCommand extends Command {
 
             ctx.reply("Чем я могу вам помочь? ", navigationMenu);
         })
+        
+        this.bot.command("menu", (ctx) => {
+            if (!ctx.session.user_id) {
+                return sendNoAuthWarning(ctx)
+            }
+
+            ctx.reply("Чем я могу вам помочь? ", navigationMenu);
+        })
     }
 }

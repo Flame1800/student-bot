@@ -1,4 +1,6 @@
-import { User } from "../types/user.type";
 import server from "./instance";
 
-export default (periodId: string, userId: string) => server.get(`/assessment/assessment/${periodId}/${userId}`) 
+export default (periodId: string, userId: string) => {
+    console.log(`get Disciplines api: /assessment/assessment/${periodId}/${userId}`)
+    return server.get(`/assessment/assessment/${periodId}/${userId}`)
+} 

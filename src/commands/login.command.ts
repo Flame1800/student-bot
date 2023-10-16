@@ -66,6 +66,15 @@ export class LoginCommand extends Command {
                     const responce = await getUser(currPhoneNum)
                     logText = `command: /tel | user-phone: ${currPhoneNum} | user-name: ${responce?.data?.name ?? "null"}`
 
+
+                    if (responce.data.user_id) {
+                        ctx.session.user_id = responce.data.user_id
+                        ctx.session.user = responce.data
+                        
+                        await ctx.reply("Вы успешно авторизовались!", Markup.removeKeyboard())
+                        await ctx.reply("Чем я могу вам помочь?", navigationMenu);
+                    }
+
                 } catch (error) {
                     logText = `command: /tel | user-phone: ${currPhoneNum} | error: ${error}`
                     console.log(`Ошибка: ${error}`)

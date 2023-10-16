@@ -1,1 +1,7 @@
 command: /contact | user-phone: 89322556890 | user-name: Свинцицкий Алексей Васильевич | result: success
+command: /contact | user-phone: 89322556890 | user-name: Свинцицкий Алексей Васильевич | result: success
+command: /contact | user-phone: 89222500118 | user-name: Янгиров Денис Фиданович | result: success
+command: /contact | user-phone: 89322556890 | user-name: Свинцицкий Алексей Васильевич | result: success
+command: /contact | user-phone: 89222500118 | user-name: Янгиров Денис Фиданович | result: success
+command: /contact | user-phone: 89322556890 | user-name: Свинцицкий Алексей Васильевич | result: success
+command: /contact | user-phone: 89222500118 | user-name: Янгиров Денис Фиданович | result: success
