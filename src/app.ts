@@ -40,6 +40,9 @@ class Bot {
             command.handle();
         }
 
+        this.bot.on("text", (ctx) => {
+            console.log('callback')
+        })
         // this.bot.on('text', (ctx) => {
         //     ctx.reply("Я вас не понял, не знаю таких команд. Чем я могу вам помочь?", navigationMenu)
         // })
@@ -47,7 +50,7 @@ class Bot {
         this.bot.launch()
     }
 
-}
+} 
 
 const bot = new Bot(new ConfigService());
 bot.init();

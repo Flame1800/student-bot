@@ -4,4 +4,5 @@ export interface User {
     group: string
     group_id: string    
     status: string
+    userPhone?: string
 }

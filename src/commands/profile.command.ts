@@ -18,7 +18,12 @@ export class ProfileCommand extends Command {
             if (ctx.session.user) {
                 const {name, group} = ctx.session.user
 
-                ctx.replyWithHTML(`Ваш профиль: \n\n<b>${name}</b> \n<i>${group} группа</i>`);
+                ctx.editMessageText(`Ваш профиль: \n\n<b>${name}</b> \n<i>${group} группа</i>`, {
+                    parse_mode: "HTML",
+                    reply_markup: {
+                      inline_keyboard: [[navigationPattern.backToMenu.button]]
+                    }
+                  });
             } else {
                 return sendNoAuthWarning(ctx)
             }

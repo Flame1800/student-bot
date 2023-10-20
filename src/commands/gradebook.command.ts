@@ -19,7 +19,7 @@ export class GradebookCommand extends Command {
 
     handle(): void {
         this.bot.action(navigationPattern.gradebook.value, async (ctx) => {
-            
+
             if (!ctx.session.user_id) {
                 return sendNoAuthWarning(ctx)
             }
@@ -44,9 +44,15 @@ export class GradebookCommand extends Command {
 
                 return [button]
             })
-            
+            periodCards.push([navigationPattern.backToMenu.button])
+
             const title = "Выберите за какой период вы хотите увидеть информацию о зачетах:"
-            ctx.replyWithHTML(title, Markup.inlineKeyboard(periodCards))
+            ctx.editMessageText(title, {
+                parse_mode: "HTML",
+                reply_markup: {
+                    inline_keyboard: periodCards
+                }
+            });
         })
 
         this.bot.action(/period:(.*)$/, async (ctx) => {
@@ -66,7 +72,10 @@ export class GradebookCommand extends Command {
                     const credits = creditAddapter(creditsResponce.data.data)
 
                     if (credits.length === 0) {
-                        return ctx.reply("За этот период ничего не нашлось")
+                        return ctx.reply("За этот период ничего не нашлось", Markup.inlineKeyboard([
+                            [Markup.button.callback("⬅ Назад к списку семестров", navigationPattern.gradebook.value)],
+                            [navigationPattern.backToMenu.button],
+                        ]))
                     }
 
                     for (const credit of credits) {
@@ -79,7 +88,7 @@ export class GradebookCommand extends Command {
                         const approveValue = `<i>${credit.isApprove ? "✅ Зачёт" : "❌ Не зачёт"}</i>`;
                         const mark = `Оценка: <b>${credit.mark}</b>`;
                         const teacher = `<i>Преподаватель:</i> ${credit.teacher}`;
-                        const divider = '\n➖➖➖➖➖➖➖➖➖' 
+                        const divider = '\n➖➖➖➖➖➖➖➖➖'
 
 
                         messageOfCredits += `${nameDiscipline} \n${formattedDate}\n\n${typeOfControll}\n\n${teacher}\n\n${mark} — ${approveValue}\n${divider}\n`;
@@ -95,7 +104,10 @@ export class GradebookCommand extends Command {
                         await ctx.replyWithHTML(messageOfCredits)
                     }
 
-                    await ctx.reply('Вы можете посмотреть зачеты за другие периоды или вернуться в меню', navigationMenu)
+                    return ctx.reply('Навигация', Markup.inlineKeyboard([
+                        [Markup.button.callback("⬅ Назад к списку семестров", navigationPattern.gradebook.value)],
+                        [navigationPattern.backToMenu.button],
+                    ]))
                 }
             } catch (error) {
                 throw new Error(`Не удалось получить данные. ${error}`)

@@ -8,6 +8,7 @@ import { ConfigService } from "../config/config.service";
 import adminIds from "../../data/admin_ids.json"
 import { appendFile } from 'node:fs';
 import { log } from "node:console";
+import logger from "../logger/logger";
 
 
 const configService = new ConfigService()
@@ -19,7 +20,6 @@ export class LoginCommand extends Command {
 
     handle(): void {
         this.bot.action('login', (ctx) => {
-
             if (ctx.session.user_id) {
                 ctx.reply("Вы успешно авторизованны! Давайте перейдем в меню", Markup.inlineKeyboard([
                     navigationPattern.navigationMenu.button
@@ -27,7 +27,7 @@ export class LoginCommand extends Command {
                 return
             }
 
-            const message = `Я не могу предоставить доступ к данным пока не узнаю кто их просит. \nПожалуйста поделитесь своим контактом что бы я мог определить вас по вашему номеру телефона`
+            const message = `Я не могу предоставить доступ к данным пока не узнаю кто их просит. \nПожалуйста поделитесь своим контактом что бы я мог определить вас по вашему номеру телефона \n\nКнопка снизу ввода ссобщений, если у вас ее не появилось нажмите на кнопку 🎛`
             ctx.reply(message, Markup.keyboard([
                 Markup.button.contactRequest('Поделиться контактом')
             ]).resize().oneTime())
@@ -60,12 +60,9 @@ export class LoginCommand extends Command {
             this.bot.on('text', async (ctx) => {
                 const phone = ctx.message.text 
                 const currPhoneNum = phone.trim().replace("+7", "8")
-                let logText = ''
 
                 try {
                     const responce = await getUser(currPhoneNum)
-                    logText = `command: /tel | user-phone: ${currPhoneNum} | user-name: ${responce?.data?.name ?? "null"}`
-
 
                     if (responce.data.user_id) {
                         ctx.session.user_id = responce.data.user_id
@@ -73,10 +70,17 @@ export class LoginCommand extends Command {
                         
                         await ctx.reply("Вы успешно авторизовались!", Markup.removeKeyboard())
                         await ctx.reply("Чем я могу вам помочь?", navigationMenu);
+                        const user = ctx.session.user ? {...ctx.session.user, userPhone: currPhoneNum} : null
+
+                        logger.log('/tel', user, true, 'login')
+
+                    } else {
+                        ctx.reply("Не удалось авторизоваться.")
+                        logger.log('/tel', null, true, 'login')
                     }
 
                 } catch (error) {
-                    logText = `command: /tel | user-phone: ${currPhoneNum} | error: ${error}`
+                    logger.log('/tel', ctx.session.user, false, 'login')
                     console.log(`Ошибка: ${error}`)
                     throw new Error(`Не удалось авторизоваться. ${error}`)
                 }
@@ -85,25 +89,18 @@ export class LoginCommand extends Command {
 
         this.bot.on('contact', async (ctx) => {
 
-            let logText = ''
-
             const phoneNumber = configService.get('MOCK_PHONE') !== 'false' ? configService.get('MOCK_PHONE') : ctx.message.contact.phone_number
-
-
-            let currPhoneNum = ""
+            let userPhone = ""
 
             if (phoneNumber.startsWith("+7")) {
-                currPhoneNum = phoneNumber.replace("+7", "8")
+                userPhone = phoneNumber.replace("+7", "8")
             }
             if (phoneNumber.startsWith("7")) {
-                currPhoneNum = phoneNumber.replace("7", "8")
+                userPhone = phoneNumber.replace("7", "8")
             }
 
-            console.log(currPhoneNum)
-
             try {
-                const responce = await getUser(currPhoneNum)
-                logText = `command: /contact | user-phone: ${currPhoneNum} | user-name: ${responce?.data?.name ?? "null"} | `
+                const responce = await getUser(userPhone)
  
                 if (responce.data.user_id) {
                     ctx.session.user_id = responce.data.user_id
@@ -112,25 +109,21 @@ export class LoginCommand extends Command {
                     await ctx.reply("Вы успешно авторизовались!", Markup.removeKeyboard())
                     await ctx.reply("Чем я могу вам помочь?", navigationMenu);
 
-                    logText += `result: success`
+                    const user = ctx.session.user ? {...ctx.session.user, userPhone} : null
+                    logger.log('/login', user, true, 'login')
 
                 } else {
-                    logText += `result: failed`
-
                     ctx.reply(`Кажется ваш телефон не зарегистрирован в системе. Обратитесь к куратору.`, Markup.inlineKeyboard([
                         Markup.button.callback('Авторизоваться', 'login')
                     ]))
+                    logger.log('/login', null, false, 'login')
+
                 }
             } catch (error) {
-                logText += `result: failed`
+                logger.log('/login', null, false, 'login')
                 throw new Error(`Не удалось авторизоваться. ${error}`)
             } 
 
-            appendFile("./data/log.txt", `${logText}\n`, 'utf-8', (err) => {
-                if (err) {
-                    console.log(`Write log file error: ${err}`)
-                }
-            })
             return null;
         })
     }

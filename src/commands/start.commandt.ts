@@ -13,6 +13,8 @@ export const navigationMenu = Markup.inlineKeyboard([
     [navigationPattern.logout.button],
 ])
 
+
+
 export class StartCommand extends Command {
     constructor(bot: Telegraf<IBotContext>) {
         super(bot);

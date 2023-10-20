@@ -29,6 +29,9 @@ const navigationPattern = {
     logout: {
         button: Markup.button.callback('Выход', 'logout'),
         value: "logout"
+    },
+    backToMenu: {
+        button: Markup.button.callback("⬅ Вернуться в меню", 'menu')
     }
 }
 

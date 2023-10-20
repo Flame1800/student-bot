@@ -14,8 +14,11 @@ export class FeedbackCommand extends Command {
 
     handle(): void {
         this.bot.action(navigationPattern.feedback.value, (ctx) => {
-            ctx.reply("Напишите, какую функцию вы хотели бы получить в личном кабинете?")
-
+            ctx.editMessageText("Напишите, какую функцию вы хотели бы получить в личном кабинете?", {
+                reply_markup: {
+                    inline_keyboard: [[navigationPattern.backToMenu.button]]
+                }
+            });
             this.bot.on('text', (ctx) => {
                 readFile('./data/suggestions.json', 'utf-8', (err, data) => {
                     if (err) {
@@ -46,28 +49,38 @@ export class FeedbackCommand extends Command {
                 return
             }
 
-            ctx.reply("Вот предложения которые пришли от пользователей")
 
             let message = '';
 
-            readFile('./data/suggestions.json', 'utf-8', (err, data) => {
+            readFile('./data/suggestions.json', 'utf-8', async (err, data) => {
                 if (err) {
                     ctx.reply(`Произошла какая то ошибка при открытии файла - ${err}\n`)
                     return
                 }
 
                 const dataFile = JSON.parse(data)
+                await ctx.reply(`Вот предложения которые пришли от пользователей. ${dataFile.data.length} сообщений`)
 
-                dataFile.data.forEach((suggestion: string) => {
-                    message += `• ${suggestion} \n\n`
-                });
+                const suggestions = dataFile.data
+                let count = 0
+                
+                for (let i = 0; i < suggestions.length; i++) {
+                    message += `• ${suggestions[i]} \n\n`
+                    count++
+
+                    if (count === 40) {
+                        await ctx.reply(message)
+                        message = ''
+                        count = 0
+                    }
+                }
 
                 if (message.length === 0) {
                     ctx.reply("Тут еще нету предложений", navigationMenu)
                     return
                 }
 
-                ctx.reply(message, navigationMenu)
+                ctx.reply("Чем еще я могу вам помочь?", navigationMenu)
             })
         })
 
