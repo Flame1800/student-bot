@@ -2,9 +2,10 @@ import { IBotContext } from "../context/context.interface";
 import navigationPattern from "../utils/navigationPattern";
 import { Command } from "./command.class";
 import { Telegraf } from "telegraf";
-import { writeFile, readFile } from 'node:fs';
+import { writeFile, readFile, writeFileSync, readFileSync } from 'node:fs';
 import { navigationMenu } from "./start.commandt";
 import adminIds from "../../data/admin_ids.json";
+import { navigationMenuMarkup } from "./menu.command";
 
 
 export class FeedbackCommand extends Command {
@@ -19,25 +20,22 @@ export class FeedbackCommand extends Command {
                     inline_keyboard: [[navigationPattern.backToMenu.button]]
                 }
             });
-            this.bot.on('text', (ctx) => {
-                readFile('./data/suggestions.json', 'utf-8', (err, data) => {
-                    if (err) {
-                        ctx.reply(`Произошла какая то ошибка - ${err} \nЧем еще я могу вам помочь?`, navigationMenu)
-                        return
-                    }
 
+            this.bot.on('text', async (ctx) => {
+
+                try {
+                    const data = readFileSync('./data/suggestions.json', 'utf-8')
                     const dataFile = JSON.parse(data)
                     const newData = { data: [...dataFile.data, `${ctx.session.user?.name} ${ctx.session.user?.group}:\n${ctx.message.text.trim()}`] }
 
-                    writeFile('./data/suggestions.json', JSON.stringify(newData), 'utf-8', (err) => {
-                        if (err) {
-                            ctx.reply(`Произошла какая то ошибка - ${err} \n Чем еще я могу вам помочь?`, navigationMenu)
-                            return
-                        }
+                    writeFileSync('./data/suggestions.json', JSON.stringify(newData), "utf-8")
+                    await this.bot.telegram.deleteMessage(ctx.chat.id, ctx.message.message_id);
 
-                        ctx.reply("Ваше предложение принято! Чем еще я могу вам помочь?", navigationMenu)
-                    })
-                })
+                    return ctx.reply("Ваше предложение принято! Чем еще я могу вам помочь?", navigationMenu);
+                } catch (error) {
+                    return ctx.reply(`Произошла какая то ошибка - ${error} \n Чем еще я могу вам помочь?`, navigationMenu);
+                }
+
             })
         })
 
@@ -63,7 +61,7 @@ export class FeedbackCommand extends Command {
 
                 const suggestions = dataFile.data
                 let count = 0
-                
+
                 for (let i = 0; i < suggestions.length; i++) {
                     message += `• ${suggestions[i]} \n\n`
                     count++

@@ -1,4 +1,5 @@
 import { Credit } from "../../types/credit.type";
+import { v4 as uuidv4 } from "uuid";
 
 interface Credit1C {
     Дисциплина: string,
@@ -14,6 +15,7 @@ export default (credits: Credit1C[]) => {
     return credits.map((credit: Credit1C): Credit => {
 
         return {
+            id: uuidv4(),
             disciplineName: credit.Дисциплина,
             typeOfControll: credit.ВидКонтроля,
             mark: credit.Оценка,

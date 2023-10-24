@@ -22,6 +22,8 @@ class Bot {
     constructor(private readonly configService: IConfigService) {
         this.bot = new Telegraf<IBotContext>(this.configService.get('TOKEN'))
         this.bot.use((new LocalSession({ database: 'sessions.json' })).middleware())
+
+
     }
 
     init() {
@@ -40,17 +42,30 @@ class Bot {
             command.handle();
         }
 
-        this.bot.on("text", (ctx) => {
-            console.log('callback')
+
+        this.bot.on("message", async (ctx, next) => {
+            const msgId = (ctx.callbackQuery)
+            if (!msgId) {
+                return next();
+            }
+            console.log(msgId)
+
+            // for (let i = 1; i <= 100; i++) {
+            //     try {
+            //         ctx.deleteMessage(msgId - i)
+            //     } catch (error) {
+            //         break;
+            //     }
+            // }
+            return next();
+
         })
-        // this.bot.on('text', (ctx) => {
-        //     ctx.reply("Я вас не понял, не знаю таких команд. Чем я могу вам помочь?", navigationMenu)
-        // })
+
 
         this.bot.launch()
     }
 
-} 
+}
 
 const bot = new Bot(new ConfigService());
 bot.init();

@@ -14,7 +14,7 @@ import renderMarkMessage from "../utils/renderMarkMessage";
 import renderSubjectCards from "../utils/renderSubjectCards";
 import logger from "../logger/logger";
 
-
+const MSG_LENGTH_LIMIT = 4096
 
 export class StatisticCommand extends Command {
     disciplines: Discipline[] = []
@@ -77,17 +77,22 @@ export class StatisticCommand extends Command {
             const discipline: Discipline | undefined = this.disciplines.find((discipline) => discipline.id === disciplineId);
 
             if (!discipline) {
-                return ctx.reply('Не найдена дисциплина', Markup.inlineKeyboard([
-                    [Markup.button.callback("⬅ Назад к списку дисциплин", navigationPattern.currentStatistic.value)],
-                    [navigationPattern.backToMenu.button],
-                ]))
+                return ctx.editMessageText("Не найдена дисциплина", {
+                    parse_mode: "HTML",
+                    reply_markup: {
+                        inline_keyboard: [
+                            [Markup.button.callback("⬅ Назад к списку дисциплин", navigationPattern.currentStatistic.value)],
+                            [navigationPattern.backToMenu.button], 
+                        ]
+                    }
+                });
             }
 
             const subjectName = `<b>${discipline.name}</b>`
             const avgMarkTitle = `✔️ <i>Средний балл: </i> <b>${discipline.avgMark}</b>`
             const info = `Обозначения: \n\n⏰ - Опоздание \n🚷 - Неявка`
 
-            let message = `${subjectName}\n\n${avgMarkTitle}\n\n${info}\n\nОценки по предмету:`
+            let message = `${subjectName}\n\n${avgMarkTitle}\n\n${info}\n\nОценки по предмету:\n\n`
 
 
             if (discipline.marks.length === 0) {
@@ -102,41 +107,41 @@ export class StatisticCommand extends Command {
                 });
             }
 
-            ctx.editMessageText(message, {
-                parse_mode: "HTML",
-            });
-
-            let messageOfMarks = ''
-            let divCounter = 20
-            let currentCount = 0
+            let isOverflow = false
 
             for (const mark of discipline.marks) {
                 if (mark.value.length === 0) {
                     continue;
                 }
-                currentCount++;
-                messageOfMarks += renderMarkMessage(mark)
 
-                if (currentCount === divCounter) {
-                    await ctx.replyWithHTML(messageOfMarks)
-                    messageOfMarks = ''
-                    currentCount = 0;
+                if (message.length > MSG_LENGTH_LIMIT - 100) {
+                    await ctx.replyWithHTML(message)
+                    isOverflow = true
+                    message = ""
                 }
-            }
 
-            if (messageOfMarks.length !== 0) {
-                await ctx.replyWithHTML(messageOfMarks)
+                message += renderMarkMessage(mark)
             }
-
 
             this.disciplines = []
             logger.log(navigationPattern.currentStatistic.value, ctx.session.user, true)
 
+            if (isOverflow) {
+                return ctx.replyWithHTML(message, Markup.inlineKeyboard([
+                    [Markup.button.callback("⬅ Назад к списку дисциплин", navigationPattern.currentStatistic.value)],
+                    [navigationPattern.backToMenu.button],
+                ]))
+            }
 
-            return ctx.reply('Навигация', Markup.inlineKeyboard([
-                [Markup.button.callback("⬅ Назад к списку дисциплин", navigationPattern.currentStatistic.value)],
-                [navigationPattern.backToMenu.button],
-            ]))
+            return ctx.editMessageText(message, {
+                parse_mode: "HTML",
+                reply_markup: {
+                    inline_keyboard: [
+                        [Markup.button.callback("⬅ Назад к списку дисциплин", navigationPattern.currentStatistic.value)],
+                        [navigationPattern.backToMenu.button],
+                    ]
+                }
+            });
         });
 
     }

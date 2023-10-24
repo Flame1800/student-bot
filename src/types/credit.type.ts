@@ -1,4 +1,5 @@
 export interface Credit {
+    id: string,
     disciplineName: string,
     typeOfControll: string,
     mark: string,

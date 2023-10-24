@@ -32,9 +32,9 @@ export default (mark: Mark) => {
     const late = mark.isLate ? " | ⏰" : '';
     const specSign = generateMarkSign(mark.value)
     const isEmptyMark = specSign.length !== 0
+    
     let markColor = !isEmptyMark ? markColors[mark.colorMark] : specSign
-
-    const markValue = `${markColor} <b>${mark.value}</b>`;
+    const markValue = `${markColor} <b>${mark.value.replace(/, Н/g, "")}</b>`;
 
     return `${markValue} | ${formattedDate}${!isEmptyMark ? attendance : ''}${!isEmptyMark ? late : ''} \n\n`;
 }

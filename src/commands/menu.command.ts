@@ -5,7 +5,7 @@ import {Telegraf } from "telegraf";
 import { navigationMenu } from "./start.commandt";
 import sendNoAuthWarning from "../utils/sendNoAuthWarning";
 
-const navigationMenuMarkup = [
+export const navigationMenuMarkup = [
     [navigationPattern.profile.button],
     [navigationPattern.currentStatistic.button],
     [navigationPattern.schedule.button],

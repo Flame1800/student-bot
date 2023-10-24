@@ -8,10 +8,12 @@ import navigationPattern from "../utils/navigationPattern";
 import sendNoAuthWarning from "../utils/sendNoAuthWarning";
 import { Command } from "./command.class";
 import { Telegraf, Markup } from "telegraf";
-import { navigationMenu } from "./start.commandt";
+import { Credit } from "../types/credit.type";
 
 export class GradebookCommand extends Command {
     periods: Period[] = []
+    credits: Credit[] = []
+    currPeriodLink: string = ""
 
     constructor(bot: Telegraf<IBotContext>) {
         super(bot);
@@ -59,59 +61,94 @@ export class GradebookCommand extends Command {
             const periodId: string = ctx.match.input.split(':')[1];
             const currPeriod: Period | undefined = this.periods.find((period: Period) => periodId === period.id)
 
-            let messageOfCredits = ''
-            let divCounter = 5
-            let currentCount = 0
+            this.currPeriodLink = `period:${periodId}`
 
             try {
                 if (currPeriod) {
                     const title = `<b>Информация о зачетах за ${currPeriod.name}</b>`
-                    await ctx.replyWithHTML(title)
 
                     const creditsResponce = await getCredits(currPeriod.id, ctx.session.user_id)
                     const credits = creditAddapter(creditsResponce.data.data)
 
                     if (credits.length === 0) {
-                        return ctx.reply("За этот период ничего не нашлось", Markup.inlineKeyboard([
-                            [Markup.button.callback("⬅ Назад к списку семестров", navigationPattern.gradebook.value)],
-                            [navigationPattern.backToMenu.button],
-                        ]))
+                        return ctx.editMessageText("За этот период ничего не нашлось", {
+                            reply_markup: {
+                                inline_keyboard: [
+                                    [Markup.button.callback("⬅ Назад к списку семестров", navigationPattern.gradebook.value)],
+                                    [navigationPattern.backToMenu.button], 
+                                ]
+                            }
+                        });
                     }
 
-                    for (const credit of credits) {
-                        currentCount++;
+                    this.credits = credits
 
-                        const date = new Date(credit.date)
-                        const formattedDate = `${date.getDate()} ${new Intl.DateTimeFormat('ru-RU', { month: 'short' }).format(date)} ${date.getFullYear()}`
-                        const nameDiscipline = `<b>${credit.disciplineName}</b>`
-                        const typeOfControll = `<i>${credit.typeOfControll}</i>`
-                        const approveValue = `<i>${credit.isApprove ? "✅ Зачёт" : "❌ Не зачёт"}</i>`;
-                        const mark = `Оценка: <b>${credit.mark}</b>`;
-                        const teacher = `<i>Преподаватель:</i> ${credit.teacher}`;
-                        const divider = '\n➖➖➖➖➖➖➖➖➖'
+                    const creditsButtons = credits.map(credit => {
+                        const nameDiscipline = `${credit.disciplineName}`
+                        const approveValue = `${credit.isApprove ? "✅ Зачёт" : "❌ Не зачёт"}`;
+
+                        const messageOfCredit = `${nameDiscipline} — ${approveValue}`;
+                        return [Markup.button.callback(messageOfCredit, `credit:${credit.id}`)]
+                    })
 
 
-                        messageOfCredits += `${nameDiscipline} \n${formattedDate}\n\n${typeOfControll}\n\n${teacher}\n\n${mark} — ${approveValue}\n${divider}\n`;
 
-                        if (currentCount === divCounter) {
-                            currentCount = 0;
-
-                            await ctx.replyWithHTML(messageOfCredits)
-                            messageOfCredits = ''
+                    return ctx.editMessageText(title, {
+                        parse_mode: "HTML",
+                        reply_markup: {
+                            inline_keyboard: [
+                                ...creditsButtons,
+                                [Markup.button.callback("⬅ Назад к списку семестров", navigationPattern.gradebook.value)],
+                                [navigationPattern.backToMenu.button], 
+                            ]
                         }
-                    }
-                    if (messageOfCredits.length !== 0) {
-                        await ctx.replyWithHTML(messageOfCredits)
-                    }
-
-                    return ctx.reply('Навигация', Markup.inlineKeyboard([
-                        [Markup.button.callback("⬅ Назад к списку семестров", navigationPattern.gradebook.value)],
-                        [navigationPattern.backToMenu.button],
-                    ]))
+                    });
                 }
             } catch (error) {
                 throw new Error(`Не удалось получить данные. ${error}`)
             }
+        })
+
+        this.bot.action(/credit:(.*)$/, async (ctx) => {
+            const creditId: string = ctx.match.input.split(':')[1];
+            const credit = this.credits.find((credit: Credit) => credit.id === creditId)
+            this.credits = []
+
+            if (!credit) {
+                return ctx.editMessageText("Не найдено информации о предмете", {
+                    parse_mode: "HTML",
+                    reply_markup: {
+                        inline_keyboard: [
+                            [Markup.button.callback("⬅ Назад к списку семестров", navigationPattern.gradebook.value)],
+                            [navigationPattern.backToMenu.button], 
+                        ]
+                    }
+                });
+            }
+
+            const date = new Date(credit.date)
+            const formattedDate = `${date.getDate()} ${new Intl.DateTimeFormat('ru-RU', { month: 'short' }).format(date)} ${date.getFullYear()}`
+            const nameDiscipline = `<b>${credit.disciplineName}</b>`
+            const typeOfControll = `<i>${credit.typeOfControll}</i>`
+            const approveValue = `<i>${credit.isApprove ? "✅ Зачёт" : "❌ Не зачёт"}</i>`;
+            const mark = `Оценка: <b>${credit.mark}</b>`;
+            const teacher = `<i>Преподаватель:</i>\n${credit.teacher}`;
+
+            const messageOfCredits = `${nameDiscipline} \n${formattedDate}\n\n${typeOfControll}\n\n${teacher}\n\n${mark} — ${approveValue}`;
+
+            const link = this.currPeriodLink
+            this.currPeriodLink = ''
+            
+            return ctx.editMessageText(messageOfCredits, {
+                parse_mode: "HTML",
+                reply_markup: {
+                    inline_keyboard: [
+                        [Markup.button.callback("⬅ Назад к списку предметов", link)],
+                        [Markup.button.callback("⬅ Назад к списку семестров", navigationPattern.gradebook.value)],
+                        [navigationPattern.backToMenu.button], 
+                    ]
+                }
+            });
         })
     }
 }
