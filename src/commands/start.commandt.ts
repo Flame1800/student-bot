@@ -31,6 +31,6 @@ export class StartCommand extends Command {
             }
 
             ctx.replyWithHTML(greeting, navigationMenu);
-        })
+        }).catch(err =>  console.log(err))
     }
 }
