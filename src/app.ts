@@ -1,4 +1,4 @@
-import { Telegraf } from "telegraf";
+import { Markup, Telegraf } from "telegraf";
 import { IConfigService } from "./config/config.interface";
 import { ConfigService } from "./config/config.service";
 import { IBotContext } from "./context/context.interface";
@@ -23,9 +23,10 @@ class Bot {
         this.bot = new Telegraf<IBotContext>(this.configService.get('TOKEN'))
         this.bot.use((new LocalSession({ database: 'sessions.json' })).middleware())
 
-        this.bot.use((ctx, next) => {
-            
-            return next()
+        this.bot.catch((err, ctx) => {
+            console.error('Ошибка:', err);
+            // Обработайте ошибку или отправьте сообщение об ошибке пользователю
+            ctx.reply('Упс! Что-то пошло не так.');
         });
 
     }
@@ -54,6 +55,7 @@ class Bot {
             }
             
             return next();
+
         })
 
 
