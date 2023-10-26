@@ -44,7 +44,11 @@ class Bot {
         ]
 
         for (const command of this.commands) {
-            command.handle();
+            try {
+                command.handle();
+            } catch(err) {
+                console.error("Error :", err)
+            }
         }
 
 
