@@ -20,7 +20,7 @@ export class LoginCommand extends Command {
 
     handle(): void {
         this.bot.action('login', (ctx) => {
-            if (ctx.session.user_id) {
+            if (ctx.session.user) {
                 ctx.reply("Вы успешно авторизованны! Давайте перейдем в меню", Markup.inlineKeyboard([
                     navigationPattern.navigationMenu.button
                 ]))
@@ -30,16 +30,18 @@ export class LoginCommand extends Command {
             const message = `Я не могу предоставить доступ к данным пока не узнаю кто их просит. \nПожалуйста поделитесь своим контактом что бы я мог определить вас по вашему номеру телефона \n\nКнопка снизу ввода ссобщений, если у вас ее не появилось нажмите на кнопку 🎛`
             ctx.reply(message, Markup.keyboard([
                 Markup.button.contactRequest('Поделиться контактом')
-            ]).resize().oneTime())
+            ]).resize().oneTime()).catch(err => {
+                console.log(err)
+                ctx.reply("Ошибка! Номер телефона можно запросить только в приватных чатах")
+            })
         })
 
         this.bot.action('logout', (ctx) => {
-            if (!ctx.session.user_id) {
+            if (!ctx.session.user?.user_id) {
                 ctx.reply("Вы не авторизованы!")
                 return
             }
 
-            ctx.session.user_id = ''
             ctx.session.user = null
 
             ctx.reply("Вы вышли из аккаунта", Markup.inlineKeyboard([
@@ -65,7 +67,6 @@ export class LoginCommand extends Command {
                     const responce = await getUser(currPhoneNum)
 
                     if (responce.data.user_id) {
-                        ctx.session.user_id = responce.data.user_id
                         ctx.session.user = responce.data
                         
                         await ctx.reply("Вы успешно авторизовались!", Markup.removeKeyboard())
@@ -103,7 +104,6 @@ export class LoginCommand extends Command {
                 const responce = await getUser(userPhone)
  
                 if (responce.data.user_id) {
-                    ctx.session.user_id = responce.data.user_id
                     ctx.session.user = responce.data
 
                     await ctx.reply("Вы успешно авторизовались!", Markup.removeKeyboard())

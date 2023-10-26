@@ -11,22 +11,17 @@ export class ProfileCommand extends Command {
 
     handle(): void {
         this.bot.action(navigationPattern.profile.value, (ctx) => {
-            if (!ctx.session.user_id) {
+            if (!ctx.session.user?.user_id) {
                 return sendNoAuthWarning(ctx)
             }
-            
-            if (ctx.session.user) {
-                const {name, group} = ctx.session.user
 
-                ctx.editMessageText(`Ваш профиль: \n\n<b>${name}</b> \n<i>${group} группа</i>`, {
-                    parse_mode: "HTML",
-                    reply_markup: {
-                      inline_keyboard: [[navigationPattern.backToMenu.button]]
-                    }
-                  });
-            } else {
-                return sendNoAuthWarning(ctx)
-            }
-        }); 
-    } 
+            ctx.editMessageText(`Ваш профиль: \n\n<b>${ctx.session.user?.name}</b> \n<i>${ctx.session.user?.group} группа</i>`, {
+                parse_mode: "HTML",
+                reply_markup: {
+                    inline_keyboard: [[navigationPattern.backToMenu.button]]
+                }
+            });
+
+        });
+    }
 }

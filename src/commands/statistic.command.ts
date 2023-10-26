@@ -17,15 +17,13 @@ import logger from "../logger/logger";
 const MSG_LENGTH_LIMIT = 4096
 
 export class StatisticCommand extends Command {
-    disciplines: Discipline[] = []
-
     constructor(bot: Telegraf<IBotContext>) {
         super(bot);
     }
 
     handle(): void {
         this.bot.action(navigationPattern.currentStatistic.value, async (ctx) => {
-            if (!ctx.session.user_id) {
+            if (!ctx.session.user?.user_id) {
                 return sendNoAuthWarning(ctx)
             }
 
@@ -45,18 +43,18 @@ export class StatisticCommand extends Command {
 
 
             try {
-                const periodsResponce = await getPeriods(ctx.session.user_id)
+                const periodsResponce = await getPeriods(ctx.session.user.user_id)
 
                 if (periodsResponce.data) {
                     const periods = periodsAdapter(periodsResponce.data.data)
                     const currPeriod: Period | undefined = periods.find((period: Period) => period.isCurrent)
 
                     if (currPeriod) {
-                        const disciplinesResponce = await getDisciplines(currPeriod.id, ctx.session.user_id)
+                        const disciplinesResponce = await getDisciplines(currPeriod.id, ctx.session.user.user_id)
                         const disciplines = disciplineAdapter(disciplinesResponce.data.data)
 
                         renderDisciplines(disciplines)
-                        this.disciplines = disciplines
+                        ctx.session.disciplines = disciplines
                     } else {
                         logger.log(navigationPattern.currentStatistic.value, ctx.session.user, false, 'noPeriods')
                         await ctx.reply("Ваши оценки не выгрузили в электронный журнал, обратитесь к куратору")
@@ -74,7 +72,7 @@ export class StatisticCommand extends Command {
 
         this.bot.action(/subject:(.*)$/, async (ctx) => {
             const disciplineId: string = ctx.match.input.split(':')[1];
-            const discipline: Discipline | undefined = this.disciplines.find((discipline) => discipline.id === disciplineId);
+            const discipline: Discipline | undefined = ctx.session.disciplines.find((discipline) => discipline.id === disciplineId);
 
             if (!discipline) {
                 return ctx.editMessageText("Не найдена дисциплина", {
@@ -123,7 +121,6 @@ export class StatisticCommand extends Command {
                 message += renderMarkMessage(mark)
             }
 
-            this.disciplines = []
             logger.log(navigationPattern.currentStatistic.value, ctx.session.user, true)
 
             if (isOverflow) {

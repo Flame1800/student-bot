@@ -2,7 +2,6 @@ import { IBotContext } from "../context/context.interface";
 import navigationPattern from "../utils/navigationPattern";
 import { Command } from "./command.class";
 import {Telegraf } from "telegraf";
-import { navigationMenu } from "./start.commandt";
 import sendNoAuthWarning from "../utils/sendNoAuthWarning";
 
 export const navigationMenuMarkup = [
@@ -21,7 +20,12 @@ export class MenuCommand extends Command {
 
     handle(): void {
         this.bot.action(navigationPattern.navigationMenu.value, (ctx) => {
-            if (!ctx.session.user_id) {
+            ctx.session.credits = []
+            ctx.session.periods = []
+            ctx.session.disciplines = []
+            ctx.session.currPeriodLink = ''
+
+            if (!ctx.session.user?.user_id) {
                 return sendNoAuthWarning(ctx)
             }
 
@@ -31,16 +35,6 @@ export class MenuCommand extends Command {
                   inline_keyboard: navigationMenuMarkup
                 }
               });
-        })
-        
-        this.bot.command("menu", (ctx) => {
-            if (!ctx.session.user_id) {
-                return sendNoAuthWarning(ctx)
-            }
-
-
-
-            ctx.reply("Чем я могу вам помочь? ", navigationMenu);
         })
     }
 }

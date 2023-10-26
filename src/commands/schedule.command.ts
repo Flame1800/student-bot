@@ -11,7 +11,7 @@ export class ScheduleCommand extends Command {
 
     handle(): void {
         this.bot.action(navigationPattern.schedule.value, async (ctx) => {
-            if (!ctx.session.user_id && !ctx.session.user) {
+            if (!ctx.session.user?.user_id) {
                 return sendNoAuthWarning(ctx);
             }
 

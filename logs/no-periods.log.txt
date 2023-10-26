@@ -3,3 +3,5 @@ command: current_stat | user phone: null | user name: Свинцицкий Ал�
 command: current_stat | user phone: null | user name: Свинцицкий Алексей Васильевич | user id: 2c160e8b-f8fb-11ec-bba8-3cecef1f6e0c | theme: noPeriods | status: ❌ failed
 command: current_stat | user phone: null | user name: Свинцицкий Алексей Васильевич | user id: 2c160e8b-f8fb-11ec-bba8-3cecef1f6e0c | theme: noPeriods | status: ❌ failed
 command: current_stat | user phone: null | user name: Свинцицкий Алексей Васильевич | user id: 2c160e8b-f8fb-11ec-bba8-3cecef1f6e0c | theme: noPeriods | status: ❌ failed
+command: current_stat | user phone: null | user name: Рубцова Екатерина Александровна | user id: 0b4b89ee-41a6-11ee-9f9b-d3981511749e | theme: noPeriods | status: ❌ failed
+command: current_stat | user phone: null | user name: Рубцова Екатерина Александровна | user id: 0b4b89ee-41a6-11ee-9f9b-d3981511749e | theme: noPeriods | status: ❌ failed
