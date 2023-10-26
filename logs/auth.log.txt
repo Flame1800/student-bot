@@ -10,3 +10,14 @@ command: /login | user phone: 89322556890 | user name: Свинцицкий Ал
 command: /login | user phone: 89322556890 | user name: Свинцицкий Алексей Васильевич | user id: 2c160e8b-f8fb-11ec-bba8-3cecef1f6e0c | theme: login | status: ✅ success
 command: /login | user phone: 89322556890 | user name: Свинцицкий Алексей Васильевич | user id: 2c160e8b-f8fb-11ec-bba8-3cecef1f6e0c | theme: login | status: ✅ success
 command: /login | user phone: 89322556890 | user name: Свинцицкий Алексей Васильевич | user id: 2c160e8b-f8fb-11ec-bba8-3cecef1f6e0c | theme: login | status: ✅ success
+command: /login | user phone: 89322556890 | user name: Свинцицкий Алексей Васильевич | user id: 2c160e8b-f8fb-11ec-bba8-3cecef1f6e0c | theme: login | status: ✅ success
+command: /login | user phone: 89322556890 | user name: Свинцицкий Алексей Васильевич | user id: 2c160e8b-f8fb-11ec-bba8-3cecef1f6e0c | theme: login | status: ✅ success
+command: /tel | user phone: 89324240971 | user name: Гайнанова Алина Равильевна | user id: 98fd5ce8-dd24-11ea-ac62-10bef5a75610 | theme: login | status: ✅ success
+command: /tel | user phone: null | user name: undefined | user id: undefined | theme: login | status: ✅ success
+command: /tel | user phone: null | user name: undefined | user id: undefined | theme: login | status: ✅ success
+command: /tel | user phone: null | user name: undefined | user id: undefined | theme: login | status: ✅ success
+command: /tel | user phone: null | user name: undefined | user id: undefined | theme: login | status: ✅ success
+command: /tel | user phone: null | user name: undefined | user id: undefined | theme: login | status: ✅ success
+command: /tel | user phone: null | user name: undefined | user id: undefined | theme: login | status: ✅ success
+command: /tel | user phone: null | user name: undefined | user id: undefined | theme: login | status: ✅ success
+command: /tel | user phone: 89324240971 | user name: Гайнанова Алина Равильевна | user id: 98fd5ce8-dd24-11ea-ac62-10bef5a75610 | theme: login | status: ✅ success

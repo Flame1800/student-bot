@@ -116,11 +116,11 @@ export class LoginCommand extends Command {
                     ctx.reply(`Кажется ваш телефон не зарегистрирован в системе. Обратитесь к куратору.`, Markup.inlineKeyboard([
                         Markup.button.callback('Авторизоваться', 'login')
                     ]))
-                    logger.log('/login', null, false, 'login')
+                    logger.guestLog('/login', phoneNumber, false, 'login')
 
                 }
             } catch (error) {
-                logger.log('/login', null, false, 'login')
+                logger.guestLog('/login', phoneNumber, false, 'login')
                 throw new Error(`Не удалось авторизоваться. ${error}`)
             } 
 

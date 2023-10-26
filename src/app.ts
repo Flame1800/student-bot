@@ -48,17 +48,13 @@ class Bot {
             if (!msgId) {
                 return next();
             }
-            console.log(msgId)
-
-            // for (let i = 1; i <= 100; i++) {
-            //     try {
-            //         ctx.deleteMessage(msgId - i)
-            //     } catch (error) {
-            //         break;
-            //     }
-            // }
+            
             return next();
 
+        })
+
+        this.bot.catch(err => {
+            console.log(err)
         })
 
 

@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "webpack",
     "dev": "nodemon -w src src/app.ts",
-    "start": "node ./dist/app.js"
+    "start": "node dist/app.bundle.js"
   },
   "author": "",
   "license": "ISC",

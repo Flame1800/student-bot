@@ -71,3 +71,5 @@ command: current_stat | user phone: null | user name: Свинцицкий Ал�
 command: current_stat | user phone: null | user name: Свинцицкий Алексей Васильевич | user id: 2c160e8b-f8fb-11ec-bba8-3cecef1f6e0c | theme: null | status: ✅ success
 command: current_stat | user phone: null | user name: Свинцицкий Алексей Васильевич | user id: 2c160e8b-f8fb-11ec-bba8-3cecef1f6e0c | theme: null | status: ✅ success
 command: current_stat | user phone: null | user name: Свинцицкий Алексей Васильевич | user id: 2c160e8b-f8fb-11ec-bba8-3cecef1f6e0c | theme: null | status: ✅ success
+command: current_stat | user phone: null | user name: Свинцицкий Алексей Васильевич | user id: 2c160e8b-f8fb-11ec-bba8-3cecef1f6e0c | theme: null | status: ✅ success
+command: current_stat | user phone: null | user name: Гайнанова Алина Равильевна | user id: 98fd5ce8-dd24-11ea-ac62-10bef5a75610 | theme: null | status: ✅ success
