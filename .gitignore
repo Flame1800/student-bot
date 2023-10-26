@@ -3,3 +3,4 @@
 /node_modules
 sessions.json
 /logs
+/data/suggestions.json
