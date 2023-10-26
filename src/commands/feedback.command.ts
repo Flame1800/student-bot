@@ -21,7 +21,8 @@ export class FeedbackCommand extends Command {
                 }
             });
 
-            const textHandler = async (ctx) => {
+
+            this.bot.on('text', async (ctx) => {
 
                 try {
                     const data = readFileSync('./data/suggestions.json', 'utf-8')
@@ -36,10 +37,7 @@ export class FeedbackCommand extends Command {
                     return ctx.reply(`Произошла какая то ошибка - ${error} \n Чем еще я могу вам помочь?`, navigationMenu);
                 }
 
-            }
-
-            this.bot.on('text', textHandler)
-            this.bot.off('text', textHandler)
+            })
         })
 
         this.bot.command('suggestions', (ctx) => {
