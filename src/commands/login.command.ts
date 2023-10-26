@@ -107,7 +107,7 @@ export class LoginCommand extends Command {
                     ctx.session.user = responce.data
 
                     await ctx.reply("Вы успешно авторизовались!", Markup.removeKeyboard())
-                    await ctx.reply("Чем я могу вам помочь?", navigationMenu);
+                    await ctx.reply("Чем я могу вам помочь?", navigationMenu).catch(err => console.log(err));
 
                     const user = ctx.session.user ? {...ctx.session.user, userPhone} : null
                     logger.log('/login', user, true, 'login')

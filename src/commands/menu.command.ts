@@ -34,7 +34,7 @@ export class MenuCommand extends Command {
                 reply_markup: {
                   inline_keyboard: navigationMenuMarkup
                 }
-              });
+              }).catch(err => console.log(err));
         })
     }
 }
