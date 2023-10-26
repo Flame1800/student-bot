@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "webpack",
+    "build": "tsc",
     "dev": "nodemon -w src src/app.ts",
     "start": "node dist/app.bundle.js"
   },
