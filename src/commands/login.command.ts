@@ -6,10 +6,9 @@ import {Telegraf, Markup } from "telegraf";
 import { navigationMenu } from "./start.commandt";
 import { ConfigService } from "../config/config.service";
 import adminIds from "../../data/admin_ids.json"
-import { appendFile } from 'node:fs';
-import { log } from "node:console";
 import logger from "../logger/logger";
-
+import User from "../schemes/user"
+import errorWraper from "../utils/errorWraper";
 
 const configService = new ConfigService()
 
@@ -38,22 +37,22 @@ export class LoginCommand extends Command {
 
         this.bot.action('logout', (ctx) => {
             if (!ctx.session.user?.user_id) {
-                ctx.reply("Вы не авторизованы!")
+                errorWraper(() => ctx.reply("Вы не авторизованы!"))
                 return
             }
 
             ctx.session.user = null
 
-            ctx.reply("Вы вышли из аккаунта", Markup.inlineKeyboard([
+            errorWraper(() => ctx.reply("Вы вышли из аккаунта", Markup.inlineKeyboard([
                 Markup.button.callback('Авторизоваться', 'login')
-            ]))
+            ])))
         })
 
-        this.bot.command('tel', (ctx) => {
+        this.bot.command('tel', async (ctx) => {
             const { id } = ctx.message.from
 
             if (adminIds.data.indexOf(id) === -1) {
-                ctx.reply("Вам недоступна данная команда")
+                await errorWraper(() => ctx.reply("Вам недоступна данная команда"))
                 return
             }
 
@@ -68,15 +67,18 @@ export class LoginCommand extends Command {
 
                     if (responce.data.user_id) {
                         ctx.session.user = responce.data
+
+                        const newUser = await new User(responce.data)
+                        await newUser.save()
                         
-                        await ctx.reply("Вы успешно авторизовались!", Markup.removeKeyboard())
-                        await ctx.reply("Чем я могу вам помочь?", navigationMenu);
+                        await errorWraper(() => ctx.reply("Вы успешно авторизовались!", Markup.removeKeyboard()))
+                        await errorWraper(() => ctx.reply("Чем я могу вам помочь?", navigationMenu))
                         const user = ctx.session.user ? {...ctx.session.user, userPhone: currPhoneNum} : null
 
                         logger.log('/tel', user, true, 'login')
 
                     } else {
-                        ctx.reply("Не удалось авторизоваться.")
+                        await errorWraper(() => ctx.reply("Не удалось авторизоваться."))
                         logger.log('/tel', null, true, 'login')
                     }
 
@@ -106,16 +108,16 @@ export class LoginCommand extends Command {
                 if (responce.data.user_id) {
                     ctx.session.user = responce.data
 
-                    await ctx.reply("Вы успешно авторизовались!", Markup.removeKeyboard())
-                    await ctx.reply("Чем я могу вам помочь?", navigationMenu).catch(err => console.log(err));
+                    await errorWraper(() => ctx.reply("Вы успешно авторизовались!", Markup.removeKeyboard()))
+                    await errorWraper(() => ctx.reply("Чем я могу вам помочь?", navigationMenu).catch(err => console.log(err)));
 
                     const user = ctx.session.user ? {...ctx.session.user, userPhone} : null
                     logger.log('/login', user, true, 'login')
 
                 } else {
-                    ctx.reply(`Кажется ваш телефон не зарегистрирован в системе. Обратитесь к куратору.`, Markup.inlineKeyboard([
+                    await errorWraper(() => ctx.reply(`Кажется ваш телефон не зарегистрирован в системе. Обратитесь к куратору.`, Markup.inlineKeyboard([
                         Markup.button.callback('Авторизоваться', 'login')
-                    ]))
+                    ])))
                     logger.guestLog('/login', phoneNumber, false, 'login')
 
                 }

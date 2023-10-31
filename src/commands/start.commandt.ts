@@ -23,12 +23,14 @@ export class StartCommand extends Command {
     handle(): void {
         const greeting = `Добро пожаловать в бот Sielom!`
 
-        this.bot.start((ctx) => {
+
+        this.bot.start(async (ctx) => {
+
             if (!ctx.session.user?.user_id) {
                 return sendNoAuthWarning(ctx);
             }
 
-            ctx.replyWithHTML(greeting, navigationMenu);
-        }).catch(err => console.log(err))
+            await ctx.replyWithHTML(greeting, navigationMenu).catch(err => console.log(err));
+        })
     }
 }

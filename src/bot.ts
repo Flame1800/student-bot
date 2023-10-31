@@ -1,10 +1,8 @@
-import { Telegraf } from "telegraf";
+import { Telegraf, session } from "telegraf";
 import { IConfigService } from "./config/config.interface";
-import { ConfigService } from "./config/config.service";
 import { IBotContext } from "./context/context.interface";
 import { Command } from "./commands/command.class";
 import { StartCommand } from "./commands/start.commandt";
-import LocalSession from "telegraf-session-local";
 import { StatisticCommand } from "./commands/statistic.command";
 import { User } from "./types/user.type";
 import { MenuCommand } from "./commands/menu.command";
@@ -13,6 +11,8 @@ import { GradebookCommand } from "./commands/gradebook.command";
 import { ProfileCommand } from "./commands/profile.command";
 import { FeedbackCommand } from "./commands/feedback.command";
 import { ScheduleCommand } from "./commands/schedule.command";
+import LocalSession from "telegraf-session-local";
+
 
 class Bot {
     bot: Telegraf<IBotContext>;
@@ -46,25 +46,19 @@ class Bot {
         for (const command of this.commands) {
             try {
                 command.handle();
-            } catch(err) {
+            } catch (err) {
                 console.error("Error:", err)
             }
         }
-
 
         this.bot.on("message", async (ctx, next) => {
             const msgId = (ctx.callbackQuery)
             if (!msgId) {
                 return next();
             }
-            
+
             return next();
-
         })
-
-
-
-
 
         this.bot.launch()
     }
