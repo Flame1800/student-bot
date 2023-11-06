@@ -50,15 +50,7 @@ class Bot {
                 console.error("Error:", err)
             }
         }
-
-        this.bot.on("message", async (ctx, next) => {
-            const msgId = (ctx.callbackQuery)
-            if (!msgId) {
-                return next();
-            }
-
-            return next();
-        })
+  
 
         this.bot.launch()
     }

@@ -1,4 +1,5 @@
 import { IBotContext } from "../context/context.interface";
+import errorWraper from "../utils/errorWraper";
 import navigationPattern from "../utils/navigationPattern";
 import sendNoAuthWarning from "../utils/sendNoAuthWarning";
 import { Command } from "./command.class";
@@ -10,12 +11,7 @@ export class ScheduleCommand extends Command {
     }
 
     handle(): void {
-        this.bot.action(navigationPattern.schedule.value, async (ctx) => {
-            if (!ctx.session.user?.user_id) {
-                return sendNoAuthWarning(ctx);
-            }
-
-
+        this.bot.action(navigationPattern.schedule.value, errorWraper((ctx: IBotContext) => {
 
             ctx.editMessageText(`Расписание для группы ${ctx.session.user?.group}`, {
                 parse_mode: "HTML",
@@ -26,6 +22,6 @@ export class ScheduleCommand extends Command {
                     ]
                 }
             });
-        })
+        }))
     }
 } 

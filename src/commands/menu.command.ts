@@ -1,40 +1,39 @@
 import { IBotContext } from "../context/context.interface";
 import navigationPattern from "../utils/navigationPattern";
 import { Command } from "./command.class";
-import {Telegraf } from "telegraf";
+import { Telegraf } from "telegraf";
 import sendNoAuthWarning from "../utils/sendNoAuthWarning";
+import errorWraper from "../utils/errorWraper";
 
 export const navigationMenuMarkup = [
-    [navigationPattern.profile.button],
-    [navigationPattern.currentStatistic.button],
-    [navigationPattern.schedule.button],
-    [navigationPattern.gradebook.button],
-    [navigationPattern.feedback.button],
-    [navigationPattern.logout.button],
-]
+  [navigationPattern.profile.button],
+  [navigationPattern.currentStatistic.button],
+  [navigationPattern.schedule.button],
+  [navigationPattern.gradebook.button],
+  [navigationPattern.feedback.button],
+  [navigationPattern.logout.button],
+];
 
 export class MenuCommand extends Command {
-    constructor(bot: Telegraf<IBotContext>) {
-        super(bot);
-    }
+  constructor(bot: Telegraf<IBotContext>) {
+    super(bot);
+  }
 
-    handle(): void {
-        this.bot.action(navigationPattern.navigationMenu.value, (ctx) => {
-            ctx.session.credits = []
-            ctx.session.periods = []
-            ctx.session.disciplines = []
-            ctx.session.currPeriodLink = ''
+  handle(): void {
+    this.bot.action(navigationPattern.navigationMenu.value, errorWraper((ctx: IBotContext) => {
+      ctx.session.credits = [];
+      ctx.session.periods = [];
+      ctx.session.disciplines = [];
+      ctx.session.currPeriodLink = "";
 
-            if (!ctx.session.user?.user_id) {
-                return sendNoAuthWarning(ctx)
-            }
-
-            ctx.editMessageText("Чем я могу вам помочь?", {
-                parse_mode: "HTML",
-                reply_markup: {
-                  inline_keyboard: navigationMenuMarkup
-                }
-              }).catch(err => console.log(err));
+      ctx
+        .editMessageText("Чем я могу вам помочь?", {
+          parse_mode: "HTML",
+          reply_markup: {
+            inline_keyboard: navigationMenuMarkup,
+          },
         })
-    }
+        .catch((err) => console.log(err));
+    }));
+  }
 }

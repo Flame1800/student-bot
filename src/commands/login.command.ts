@@ -18,41 +18,45 @@ export class LoginCommand extends Command {
     }
 
     handle(): void {
-        this.bot.action('login', (ctx) => {
-            if (ctx.session.user) {
-                ctx.reply("Вы успешно авторизованны! Давайте перейдем в меню", Markup.inlineKeyboard([
-                    navigationPattern.navigationMenu.button
-                ]))
-                return
+        this.bot.action('login', (ctx: IBotContext) => {
+            try {
+                if (ctx.session.user) {
+                    ctx.reply("Вы успешно авторизованны! Давайте перейдем в меню", Markup.inlineKeyboard([
+                        navigationPattern.navigationMenu.button
+                    ]))
+                    return
+                }
+    
+                const message = `Я не могу предоставить доступ к данным пока не узнаю кто их просит. \nПожалуйста поделитесь своим контактом что бы я мог определить вас по вашему номеру телефона \n\nКнопка снизу ввода ссобщений, если у вас ее не появилось нажмите на кнопку 🎛`
+                ctx.reply(message, Markup.keyboard([
+                    Markup.button.contactRequest('Поделиться контактом')
+                ]).resize().oneTime())  
+            } catch (error) {
+                console.error(error)
             }
-
-            const message = `Я не могу предоставить доступ к данным пока не узнаю кто их просит. \nПожалуйста поделитесь своим контактом что бы я мог определить вас по вашему номеру телефона \n\nКнопка снизу ввода ссобщений, если у вас ее не появилось нажмите на кнопку 🎛`
-            ctx.reply(message, Markup.keyboard([
-                Markup.button.contactRequest('Поделиться контактом')
-            ]).resize().oneTime()).catch(err => {
-                console.log(err)
-                ctx.reply("Ошибка! Номер телефона можно запросить только в приватных чатах")
-            })
         })
 
         this.bot.action('logout', (ctx) => {
-            if (!ctx.session.user?.user_id) {
-                errorWraper(() => ctx.reply("Вы не авторизованы!"))
-                return
+            try {
+                if (!ctx.session.user?.user_id) {
+                    errorWraper(() => ctx.reply("Вы не авторизованы!"))
+                    return
+                }
+    
+                ctx.session.user = null
+                ctx.reply("Вы вышли из аккаунта", Markup.inlineKeyboard([
+                    Markup.button.callback('Авторизоваться', 'login')
+                ]))
+            } catch (error) {
+                console.error(error)
             }
-
-            ctx.session.user = null
-
-            errorWraper(() => ctx.reply("Вы вышли из аккаунта", Markup.inlineKeyboard([
-                Markup.button.callback('Авторизоваться', 'login')
-            ])))
         })
 
         this.bot.command('tel', async (ctx) => {
             const { id } = ctx.message.from
 
             if (adminIds.data.indexOf(id) === -1) {
-                await errorWraper(() => ctx.reply("Вам недоступна данная команда"))
+                await ctx.reply("Вам недоступна данная команда")
                 return
             }
 
@@ -65,22 +69,20 @@ export class LoginCommand extends Command {
                 try {
                     const responce = await getUser(currPhoneNum)
 
-                    if (responce.data.user_id) {
-                        ctx.session.user = responce.data
-
-                        const newUser = await new User(responce.data)
-                        await newUser.save()
-                        
-                        await errorWraper(() => ctx.reply("Вы успешно авторизовались!", Markup.removeKeyboard()))
-                        await errorWraper(() => ctx.reply("Чем я могу вам помочь?", navigationMenu))
-                        const user = ctx.session.user ? {...ctx.session.user, userPhone: currPhoneNum} : null
-
-                        logger.log('/tel', user, true, 'login')
-
-                    } else {
-                        await errorWraper(() => ctx.reply("Не удалось авторизоваться."))
+                    if (!responce.data.user_id) {
                         logger.log('/tel', null, true, 'login')
-                    }
+                        return ctx.reply("Не удалось авторизоваться.")
+                    } 
+
+                    ctx.session.user = responce.data
+
+                    const newUser = await new User(responce.data)
+                    await newUser.save()
+
+                    ctx.reply(`Вы успешно авторизовались!\nЧем я могу вам помочь?`, navigationMenu)
+
+                    const user = ctx.session.user ? {...ctx.session.user, userPhone: currPhoneNum} : null
+                    logger.log('/tel', user, true, 'login')
 
                 } catch (error) {
                     logger.log('/tel', ctx.session.user, false, 'login')
@@ -98,7 +100,7 @@ export class LoginCommand extends Command {
             if (phoneNumber.startsWith("+7")) {
                 userPhone = phoneNumber.replace("+7", "8")
             }
-            if (phoneNumber.startsWith("7")) {
+            else if (phoneNumber.startsWith("7")) {
                 userPhone = phoneNumber.replace("7", "8")
             }
 
@@ -108,16 +110,15 @@ export class LoginCommand extends Command {
                 if (responce.data.user_id) {
                     ctx.session.user = responce.data
 
-                    await errorWraper(() => ctx.reply("Вы успешно авторизовались!", Markup.removeKeyboard()))
-                    await errorWraper(() => ctx.reply("Чем я могу вам помочь?", navigationMenu).catch(err => console.log(err)));
-
+                    ctx.reply(`Вы успешно авторизовались!\nЧем я могу вам помочь?`, navigationMenu)
+                    
                     const user = ctx.session.user ? {...ctx.session.user, userPhone} : null
                     logger.log('/login', user, true, 'login')
 
                 } else {
-                    await errorWraper(() => ctx.reply(`Кажется ваш телефон не зарегистрирован в системе. Обратитесь к куратору.`, Markup.inlineKeyboard([
+                    ctx.reply(`Кажется ваш телефон не зарегистрирован в системе. Обратитесь к куратору.`, Markup.inlineKeyboard([
                         Markup.button.callback('Авторизоваться', 'login')
-                    ])))
+                    ]))
                     logger.guestLog('/login', phoneNumber, false, 'login')
 
                 }

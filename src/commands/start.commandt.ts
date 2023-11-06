@@ -1,4 +1,5 @@
 import { IBotContext } from "../context/context.interface";
+import errorWraper from "../utils/errorWraper";
 import navigationPattern from "../utils/navigationPattern";
 import sendNoAuthWarning from "../utils/sendNoAuthWarning";
 import { Command } from "./command.class";
@@ -22,15 +23,6 @@ export class StartCommand extends Command {
 
     handle(): void {
         const greeting = `Добро пожаловать в бот Sielom!`
-
-
-        this.bot.start(async (ctx) => {
-
-            if (!ctx.session.user?.user_id) {
-                return sendNoAuthWarning(ctx);
-            }
-
-            await ctx.replyWithHTML(greeting, navigationMenu).catch(err => console.log(err));
-        })
+        this.bot.start(errorWraper((ctx: IBotContext) => ctx.replyWithHTML(greeting, navigationMenu)))
     }
 }
