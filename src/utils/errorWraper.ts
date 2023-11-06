@@ -11,7 +11,6 @@ export default (fn: Function) => {
       return await fn(ctx);
     } catch (error) {
       //   logger.log(ctx, 'asyncWrapper error, %O', error);
-      await ctx.reply(`Произошла какая-то ошибка!, ${JSON.stringify(error)}`);
       console.error(`Ошибка: `, error);
       return next();
     }
