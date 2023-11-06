@@ -14,7 +14,7 @@ export class ProfileCommand extends Command {
     this.bot.action(
       navigationPattern.profile.value,
       errorWraper((ctx: IBotContext) => {
-        ctx.editMessageText(
+        ctx.reply(
           `Ваш профиль: \n\n<b>${ctx.session.user?.name}</b> \n<i>${ctx.session.user?.group} группа</i>`,
           {
             parse_mode: "HTML",

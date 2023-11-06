@@ -27,7 +27,7 @@ export class MenuCommand extends Command {
       ctx.session.currPeriodLink = "";
 
       ctx
-        .editMessageText("Чем я могу вам помочь?", {
+        .reply("Чем я могу вам помочь?", {
           parse_mode: "HTML",
           reply_markup: {
             inline_keyboard: navigationMenuMarkup,
