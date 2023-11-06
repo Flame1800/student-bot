@@ -20,7 +20,7 @@ const connectToDb = async () => {
 };
 
 connectToDb().then(() => {
-    const port = 6000;
+    const port = 6001;
     app.listen(port);
     console.log(`Server is start on port ${port}`);
 });
