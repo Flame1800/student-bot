@@ -1,7 +1,6 @@
 import { IBotContext } from "../context/context.interface";
 import { Command } from "./command.class";
 import { Telegraf } from "telegraf";
-import sendNoAuthWarning from "../utils/sendNoAuthWarning";
 import navigationPattern from "../utils/navigationPattern";
 import errorWraper from "../utils/errorWraper";
 
@@ -14,7 +13,7 @@ export class ProfileCommand extends Command {
     this.bot.action(
       navigationPattern.profile.value,
       errorWraper((ctx: IBotContext) => {
-        ctx.reply(
+        ctx.editMessageText(
           `Ваш профиль: \n\n<b>${ctx.session.user?.name}</b> \n<i>${ctx.session.user?.group} группа</i>`,
           {
             parse_mode: "HTML",

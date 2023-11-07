@@ -33,7 +33,7 @@ export class StatisticCommand extends Command {
                 const subjectCards = renderSubjectCards(disciplines)
                 subjectCards.push([navigationPattern.backToMenu.button])
 
-                ctx.reply(title, {
+                ctx.editMessageText(title, {
                     parse_mode: "HTML",
                     reply_markup: {
                         inline_keyboard: subjectCards
@@ -75,7 +75,7 @@ export class StatisticCommand extends Command {
             const discipline: Discipline | undefined = ctx.session.disciplines.find((discipline) => discipline.id === disciplineId);
 
             if (!discipline) {
-                return ctx.reply("Не найдена дисциплина", {
+                return ctx.editMessageText("Не найдена дисциплина", {
                     parse_mode: "HTML",
                     reply_markup: {
                         inline_keyboard: [
@@ -94,7 +94,7 @@ export class StatisticCommand extends Command {
 
 
             if (discipline.marks.length === 0) {
-                return ctx.reply(`${message} \n\nНет текущих оценок`, {
+                return ctx.editMessageText(`${message} \n\nНет текущих оценок`, {
                     parse_mode: "HTML",
                     reply_markup: {
                         inline_keyboard: [
@@ -130,7 +130,7 @@ export class StatisticCommand extends Command {
                 ]))
             }
 
-            return ctx.reply(message, {
+            return ctx.editMessageText(message, {
                 parse_mode: "HTML",
                 reply_markup: {
                     inline_keyboard: [

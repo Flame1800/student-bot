@@ -14,7 +14,7 @@ export class FeedbackCommand extends Command {
 
     handle(): void {
         this.bot.action(navigationPattern.feedback.value, (ctx) => {
-            ctx.reply("Напишите, какую функцию вы хотели бы получить в личном кабинете?", {
+            ctx.editMessageText("Напишите, какую функцию вы хотели бы получить в личном кабинете?", {
                 reply_markup: {
                     inline_keyboard: [[navigationPattern.backToMenu.button]]
                 }

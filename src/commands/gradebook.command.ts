@@ -44,7 +44,7 @@ export class GradebookCommand extends Command {
             periodCards.push([navigationPattern.backToMenu.button])
 
             const title = "Выберите за какой период вы хотите увидеть информацию о зачетах:"
-            ctx.reply(title, {
+            ctx.editMessageText(title, {
                 parse_mode: "HTML",
                 reply_markup: {
                     inline_keyboard: periodCards
@@ -66,7 +66,7 @@ export class GradebookCommand extends Command {
                     const credits = creditAddapter(creditsResponce.data.data)
 
                     if (credits.length === 0) {
-                        return ctx.reply("За этот период ничего не нашлось", {
+                        return ctx.editMessageText("За этот период ничего не нашлось", {
                             reply_markup: {
                                 inline_keyboard: [
                                     [Markup.button.callback("⬅ Назад к списку семестров", navigationPattern.gradebook.value)],
@@ -88,7 +88,7 @@ export class GradebookCommand extends Command {
 
 
 
-                    return ctx.reply(title, {
+                    return ctx.editMessageText(title, {
                         parse_mode: "HTML",
                         reply_markup: {
                             inline_keyboard: [
@@ -110,7 +110,7 @@ export class GradebookCommand extends Command {
             ctx.session.credits = []
 
             if (!credit) {
-                return ctx.reply("Не найдено информации о предмете", {
+                return ctx.editMessageText("Не найдено информации о предмете", {
                     parse_mode: "HTML",
                     reply_markup: {
                         inline_keyboard: [
@@ -134,7 +134,7 @@ export class GradebookCommand extends Command {
             const link = ctx.session.currPeriodLink
             ctx.session.currPeriodLink = ''
 
-            return ctx.reply(messageOfCredits, {
+            return ctx.editMessageText(messageOfCredits, {
                 parse_mode: "HTML",
                 reply_markup: {
                     inline_keyboard: [

@@ -10,6 +10,7 @@ export interface SessionData {
   periods: Period[]
   credits: Credit[]
   currPeriodLink: string
+  isExist?: boolean
 }
 
 export interface IBotContext extends Context {

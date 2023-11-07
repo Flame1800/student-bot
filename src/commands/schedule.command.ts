@@ -13,7 +13,7 @@ export class ScheduleCommand extends Command {
     handle(): void {
         this.bot.action(navigationPattern.schedule.value, errorWraper((ctx: IBotContext) => {
 
-            ctx.reply(`Расписание для группы ${ctx.session.user?.group}`, {
+            ctx.editMessageText(`Расписание для группы ${ctx.session.user?.group}`, {
                 parse_mode: "HTML",
                 reply_markup: {
                     inline_keyboard: [
