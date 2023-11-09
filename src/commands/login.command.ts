@@ -7,7 +7,6 @@ import { navigationMenu } from "./start.commandt";
 import { ConfigService } from "../config/config.service";
 import adminIds from "../../data/admin_ids.json"
 import logger from "../logger/logger";
-import User from "../schemes/user"
 import errorWraper from "../utils/errorWraper";
 
 const configService = new ConfigService()
@@ -75,10 +74,6 @@ export class LoginCommand extends Command {
                     } 
 
                     ctx.session.user = responce.data
-
-                    const newUser = await new User(responce.data)
-                    await newUser.save()
-
                     ctx.reply(`Вы успешно авторизовались!\nЧем я могу вам помочь?`, navigationMenu)
 
                     const user = ctx.session.user ? {...ctx.session.user, userPhone: currPhoneNum} : null

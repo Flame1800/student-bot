@@ -13,6 +13,7 @@ import { navigationMenu } from "./start.commandt";
 import renderMarkMessage from "../utils/renderMarkMessage";
 import renderSubjectCards from "../utils/renderSubjectCards";
 import logger from "../logger/logger";
+import errorWraper from "../utils/errorWraper";
 
 const MSG_LENGTH_LIMIT = 4096
 
@@ -70,7 +71,7 @@ export class StatisticCommand extends Command {
             }
         });
 
-        this.bot.action(/subject:(.*)$/, async (ctx) => {
+        this.bot.action(/subject:(.*)$/, async (ctx: IBotContext) => {
             const disciplineId: string = ctx.match.input.split(':')[1];
             const discipline: Discipline | undefined = ctx.session.disciplines.find((discipline) => discipline.id === disciplineId);
 

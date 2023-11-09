@@ -25,6 +25,7 @@ export class MenuCommand extends Command {
       ctx.session.periods = [];
       ctx.session.disciplines = [];
       ctx.session.currPeriodLink = "";
+      ctx.session.awaitingFeedback = false;
 
       ctx
         .editMessageText("Чем я могу вам помочь?", {

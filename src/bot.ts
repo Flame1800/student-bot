@@ -29,12 +29,9 @@ class Bot {
       session(db, { sessionName: "session", collectionName: "sessions" })
     );
 
-    // this.bot.use((new LocalSession({ database: 'sessions.json' })).middleware())
 
     this.bot.catch((err, ctx) => {
       console.error("Ошибка:", err);
-      // Обработайте ошибку или отправьте сообщение об ошибке пользователю
-      // ctx.reply('Упс! Что-то пошло не так.');
     });
   }
 

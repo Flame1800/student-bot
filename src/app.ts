@@ -6,16 +6,7 @@ import { MongoClient } from "mongodb";
 
 const app = express();
 
-const connectToDb = async () => {
-  try {
-    await mongoose.connect("mongodb://localhost:27017/schedule", {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    } as mongoose.ConnectOptions);
-  } catch (e) {
-    console.log("Ошибка: ", e);
-  }
-};
+mongoose.connect("mongodb://localhost:27017/schedule")
 
 MongoClient.connect("mongodb://localhost:27017/schedule").then((client) => {
   const db = client.db();

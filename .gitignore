@@ -2,5 +2,5 @@
 .env
 /node_modules
 sessions.json
-*/suggestions.json
+/data/suggestions.json
 /logs/

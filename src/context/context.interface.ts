@@ -10,9 +10,10 @@ export interface SessionData {
   periods: Period[]
   credits: Credit[]
   currPeriodLink: string
-  isExist?: boolean
+  awaitingFeedback: boolean
 }
 
 export interface IBotContext extends Context {
     session: SessionData; 
+    match: Function;
 }
