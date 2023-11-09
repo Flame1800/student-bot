@@ -2,7 +2,6 @@ import { IBotContext } from "../context/context.interface";
 import navigationPattern from "../utils/navigationPattern";
 import { Command } from "./command.class";
 import { Telegraf } from "telegraf";
-import { readFile, writeFileSync, readFileSync } from "node:fs";
 import { navigationMenu } from "./start.commandt";
 import adminIds from "../../data/admin_ids.json";
 import errorWraper from "../utils/errorWraper";

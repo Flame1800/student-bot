@@ -71,7 +71,7 @@ export class StatisticCommand extends Command {
             }
         });
 
-        this.bot.action(/subject:(.*)$/, async (ctx: IBotContext) => {
+        this.bot.action(/subject:(.*)$/, async (ctx) => {
             const disciplineId: string = ctx.match.input.split(':')[1];
             const discipline: Discipline | undefined = ctx.session.disciplines.find((discipline) => discipline.id === disciplineId);
 
