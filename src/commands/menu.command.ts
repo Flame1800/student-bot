@@ -4,6 +4,7 @@ import { Command } from "./command.class";
 import { Telegraf } from "telegraf";
 import sendNoAuthWarning from "../utils/sendNoAuthWarning";
 import errorWraper from "../utils/errorWraper";
+import logger from "../utils/logger/logger";
 
 export const navigationMenuMarkup = [
   [navigationPattern.profile.button],
@@ -34,7 +35,9 @@ export class MenuCommand extends Command {
             inline_keyboard: navigationMenuMarkup,
           },
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          logger.error(ctx, `Ошибка в /menu: ${err}`)
+        });
     }));
   }
 }

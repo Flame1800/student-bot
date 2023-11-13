@@ -1,4 +1,5 @@
 import { IBotContext } from "../context/context.interface";
+import logger from "./logger/logger";
 import sendNoAuthWarning from "./sendNoAuthWarning";
 
 export default (fn: Function) => {
@@ -10,7 +11,7 @@ export default (fn: Function) => {
     try {
       return await fn(ctx);
     } catch (error) {
-      //   logger.log(ctx, 'asyncWrapper error, %O', error);
+      logger.error(ctx, `asyncWrapper error: ${error}`);
       console.error(`Ошибка: `, error);
       return next();
     }

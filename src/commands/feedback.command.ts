@@ -6,6 +6,7 @@ import { navigationMenu } from "./start.commandt";
 import adminIds from "../../data/admin_ids.json";
 import errorWraper from "../utils/errorWraper";
 import Suggestion from "../schemes/suggestion";
+import logger from "../utils/logger/logger";
 
 export class FeedbackCommand extends Command {
   constructor(bot: Telegraf<IBotContext>) {
@@ -47,6 +48,10 @@ export class FeedbackCommand extends Command {
               navigationMenu
             );
           } catch (error) {
+            logger.error(
+              ctx,
+              "Ошибка в feedback. Предложение не добавилось в бд"
+            );
             return ctx.reply(
               `Произошла какая то ошибка - ${error} \n Чем еще я могу вам помочь?`,
               navigationMenu
@@ -62,6 +67,7 @@ export class FeedbackCommand extends Command {
       const { id } = ctx.message.from;
 
       if (adminIds.data.indexOf(id) === -1) {
+        logger.info(ctx, "Недостпуная команда для пользователя.");
         ctx.reply("Вам недоступна данная команда");
         return;
       }
@@ -76,7 +82,7 @@ export class FeedbackCommand extends Command {
       let count = 0;
 
       for (let i = 0; i < suggestions.length; i++) {
-        const value =  `• ${suggestions[i].user}: ${suggestions[i].suggestion} \n\n`
+        const value = `• ${suggestions[i].user}: ${suggestions[i].suggestion} \n\n`;
         message += value;
         count++;
 
@@ -84,13 +90,11 @@ export class FeedbackCommand extends Command {
           await ctx.reply(message);
           message = "";
           count = 0;
-        } 
+        }
       }
-
 
       if (message.length !== 0) {
         await ctx.reply(message);
-        // ctx.reply("Тут еще нету предложений", navigationMenu);
       }
 
       ctx.reply("Чем еще я могу вам помочь?", navigationMenu);

@@ -4,3 +4,4 @@
 sessions.json
 /data/suggestions.json
 /logs/
+*.log

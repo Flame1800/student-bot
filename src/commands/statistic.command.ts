@@ -12,8 +12,7 @@ import navigationPattern from "../utils/navigationPattern";
 import { navigationMenu } from "./start.commandt";
 import renderMarkMessage from "../utils/renderMarkMessage";
 import renderSubjectCards from "../utils/renderSubjectCards";
-import logger from "../logger/logger";
-import errorWraper from "../utils/errorWraper";
+import logger from "../utils/logger/logger";
 
 const MSG_LENGTH_LIMIT = 4096
 
@@ -57,16 +56,15 @@ export class StatisticCommand extends Command {
                         renderDisciplines(disciplines)
                         ctx.session.disciplines = disciplines
                     } else {
-                        logger.log(navigationPattern.currentStatistic.value, ctx.session.user, false, 'noPeriods')
-                        await ctx.reply("Ваши оценки не выгрузили в электронный журнал, обратитесь к куратору")
-                        return ctx.reply('Чем еще я могу вам помочь?', navigationMenu)
+                        logger.debug(ctx, "Не надено периодов");
+                        await ctx.reply("Ваши оценки не выгрузили в электронный журнал, обратитесь к куратору");
+                        return ctx.reply('Чем еще я могу вам помочь?', navigationMenu);
                     }
                 }
 
             } catch (error) {
                 ctx.reply('Произошла какая-то ошибка! Чем еще я могу вам помочь?', navigationMenu)
-                logger.log(navigationPattern.currentStatistic.value, ctx.session.user, false, 'noPeriods')
-
+                logger.debug(ctx, `Ошибка при загрузке дисциплин: ${error}`)
                 throw new Error(`Не удалось получить данные. ${error}`)
             }
         });
@@ -121,8 +119,6 @@ export class StatisticCommand extends Command {
 
                 message += renderMarkMessage(mark)
             }
-
-            logger.log(navigationPattern.currentStatistic.value, ctx.session.user, true)
 
             if (isOverflow) {
                 return ctx.replyWithHTML(message, Markup.inlineKeyboard([
