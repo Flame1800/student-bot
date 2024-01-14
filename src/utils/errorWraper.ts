@@ -12,7 +12,7 @@ export default (fn: Function) => {
       return await fn(ctx);
     } catch (error) {
       logger.error(ctx, `asyncWrapper error: ${error}`);
-      console.error(`Ошибка: `, error);
+      ctx.reply(`Ошибка: ${error}`, );
       return next();
     }
   };

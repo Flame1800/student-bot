@@ -63,9 +63,8 @@ export class StatisticCommand extends Command {
                 }
 
             } catch (error) {
-                ctx.reply('Произошла какая-то ошибка! Чем еще я могу вам помочь?', navigationMenu)
+                ctx.reply(`Произошла какая-то ошибка! \n\n ${error} \n\n Чем еще я могу вам помочь?`, navigationMenu)
                 logger.debug(ctx, `Ошибка при загрузке дисциплин: ${error}`)
-                throw new Error(`Не удалось получить данные. ${error}`)
             }
         });
 

@@ -10,8 +10,7 @@ export default async (ctx: IBotContext) => {
           Markup.button.callback("Авторизоваться", "login"),
         ])
       )
-      .catch((err) => console.log("Ошибка", err));
   } catch (error) {
-    console.error(`Ошибка: `, error);
+    ctx.reply(`Произошла ошибка: \n\n ${error}`);
   }
 };

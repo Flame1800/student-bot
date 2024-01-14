@@ -38,6 +38,7 @@ export class LoginCommand extends Command {
         );
       } catch (error) {
         console.error(error);
+        ctx.reply(`Произошла ошибка: \n\n ${error}`);
       }
     });
 
@@ -57,6 +58,7 @@ export class LoginCommand extends Command {
         );
       } catch (error) {
         console.error(error);
+        ctx.reply(`Произошла ошибка: \n\n ${error}`);
       }
     });
 
@@ -96,8 +98,7 @@ export class LoginCommand extends Command {
             : null;
         } catch (error) {
           logger.error(ctx, "Ошибка загрузки пользователя в /tel");
-          console.log(`Ошибка: ${error}`);
-          throw new Error(`Не удалось авторизоваться. ${error}`);
+          ctx.reply(`Произошла ошибка: \n\n ${error}`);
         }
       });
     });
@@ -144,7 +145,7 @@ export class LoginCommand extends Command {
         }
       } catch (error) {
         logger.error(ctx, "Ошибка загрузки пользователя в /auth");
-        throw new Error(`Не удалось авторизоваться. ${error}`);
+        ctx.reply(`Произошла ошибка: \n\n ${error}`);
       }
 
       return null;

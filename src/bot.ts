@@ -32,6 +32,7 @@ class Bot {
 
     this.bot.catch((err, ctx) => {
       console.error("Ошибка:", err);
+      ctx.reply(`Произошла ошибка: \n\n ${err}`);
     });
   }
 

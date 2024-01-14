@@ -30,7 +30,7 @@ export class GradebookCommand extends Command {
         }
       } catch (error) {
         logger.error(ctx, "Не удалось получить данные в /grabebook/periods");
-        throw new Error(`Не удалось получить данные. ${error}`);
+        ctx.reply(`Не удалось получить данные. ${error}`);
       }
 
       const periodCards = ctx.session.periods.map((period) => {
@@ -119,7 +119,7 @@ export class GradebookCommand extends Command {
         }
       } catch (error) {
         logger.error(ctx, "Не удалось получить данные в /gradebook.");
-        throw new Error(`Не удалось получить данные. ${error}`);
+        ctx.reply(`Произошла ошибка: \n\n ${error}`);
       }
     });
 

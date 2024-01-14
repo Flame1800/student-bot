@@ -37,6 +37,7 @@ export class MenuCommand extends Command {
         })
         .catch((err) => {
           logger.error(ctx, `Ошибка в /menu: ${err}`)
+          ctx.reply(`Произошла ошибка: \n\n ${err}`);
         });
     }));
   }

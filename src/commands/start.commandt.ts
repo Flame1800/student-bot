@@ -1,7 +1,6 @@
 import { IBotContext } from "../context/context.interface";
 import errorWraper from "../utils/errorWraper";
 import navigationPattern from "../utils/navigationPattern";
-import sendNoAuthWarning from "../utils/sendNoAuthWarning";
 import { Command } from "./command.class";
 import { Telegraf, Markup } from "telegraf";
 
